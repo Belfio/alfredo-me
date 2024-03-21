@@ -1,21 +1,18 @@
 import type { MetaFunction } from "@remix-run/node";
 import Header from "@/components/Header";
-import { Button } from "@/components/ui/button";
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "Weeeeeee" },
-    { name: "description", content: "It's Alfredo " },
+    { title: "New Remix App" },
+    { name: "description", content: "Welcome to Remix!" },
   ];
 };
 
 export default function Index() {
   return (
-    <div className="">
-      <Header className="mt-8" />
-      <Button>Click me</Button>
-      <div className="bg-red-500">Ciao</div>
-      <h1>Welcome to my pagea</h1>
+    <div className="bg-red-500">
+      <Header />
+      <h1>Welcome to Remix a</h1>
       <ul>
         <li>
           <a
