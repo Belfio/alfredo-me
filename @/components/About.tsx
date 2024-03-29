@@ -4,7 +4,7 @@ export default function About() {
       <h1>
         Hey!
         <br />
-        This is the website of Belfiori, Alfredo Belfiori.
+        This is me, Alfredo.
       </h1>
     </div>
   );
