@@ -6,3 +6,6 @@ node_modules
 
 # sst
 .sst
+sst-env.ts
+sst-env.d.ts
+bun.lockb

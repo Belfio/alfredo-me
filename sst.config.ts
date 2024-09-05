@@ -11,7 +11,14 @@ export default $config({
   },
 
   async run() {
-    const site = new sst.aws.Remix("Alfredo-Site");
+    const site = new sst.aws.Remix("Alfredo-Site", {
+      domain: {
+        name: "albelfio.com",
+        dns: sst.cloudflare.dns({
+          override: true,
+        }),
+      },
+    });
     return {
       url: site.url,
     };

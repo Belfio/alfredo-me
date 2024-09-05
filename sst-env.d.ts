@@ -7,14 +7,6 @@ declare module "sst" {
       "type": "sst.aws.Remix"
       "url": string
     }
-    "MyWeb": {
-      "type": "sst.aws.Remix"
-      "url": string
-    }
-    "PersonalSite": {
-      "type": "sst.aws.Remix"
-      "url": string
-    }
   }
 }
 export {}
