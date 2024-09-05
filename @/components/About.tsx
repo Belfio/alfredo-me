@@ -1,11 +1,8 @@
 export default function About() {
   return (
-    <div className="w-[95%] sm:max-w-[400px] m-auto mt-8">
-      <h1>
-        Hey!
-        <br />
-        This is me, Alfredo.
-      </h1>
-    </div>
+    <h1 id="about">
+      Hey I am Alfredo, Software and Biomedical Engineer. <br />I love art,
+      health, technology and innovation.
+    </h1>
   );
 }

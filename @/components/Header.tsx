@@ -5,32 +5,29 @@ export default function Header({ className }: { className?: string }) {
     <header>
       <nav
         className={cn(
-          "m-auto w-[95%] sm:max-w-[1024px] rounded shadow-md bg-white p-4",
+          "m-auto w-[95%] sm:max-w-[1024px] rounded shadow-md bg-white p-4 ",
           className
         )}
       >
-        <ul className="flex">
+        <ul className="flex gap-4">
           <li>
-            <a
-              target="_blank"
-              href="https://remix.run/tutorials/blog"
-              rel="noreferrer"
-            >
-              Questo è il sito di Alfredo campioneeeaa
+            <a href="/#home" rel="noreferrer">
+              Home
             </a>
           </li>
           <li>
-            <a
-              target="_blank"
-              href="https://remix.run/tutorials/jokes"
-              rel="noreferrer"
-            >
-              Deep Dive Jokes App Tutorial
+            <a href="#projects" rel="noreferrer">
+              Projects
             </a>
           </li>
           <li>
-            <a target="_blank" href="https://remix.run/docs" rel="noreferrer">
-              Remix Docs
+            <a href="#blogs" rel="noreferrer">
+              Blogs
+            </a>
+          </li>
+          <li>
+            <a href="#/contact" rel="noreferrer">
+              Contact
             </a>
           </li>
         </ul>

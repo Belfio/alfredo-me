@@ -8,7 +8,7 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export default function Index() {
+export default function Blog() {
   return (
     <div className="bg-red-500">
       <Header />
