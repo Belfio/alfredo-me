@@ -1,3 +1,5 @@
+import ArticleLink from "./ArticleLink";
+
 export type Blog = {
   title: string;
   description: string;
@@ -7,28 +9,17 @@ export type Blog = {
 
 export default function Blogs({ blogs }: { blogs: Blog[] }) {
   return (
-    <div id="blogs" className="">
+    <div id="blogs" className="my-8">
       <h1>Blogs</h1>
-      {blogs.map((blog) => {
-        if (!blog || typeof blog !== "object") {
-          console.error("Invalid blog entry:", blog);
-          return <div key={Math.random()}>Invalid blog entry</div>;
-        }
-
-        return (
-          <div key={blog.id}>
-            <h3>{blog.title}</h3>
-            <p>{blog.description}</p>
-            <div>
-              {blog.html ? (
-                <div dangerouslySetInnerHTML={{ __html: blog.html }} />
-              ) : (
-                <p>No content available</p>
-              )}
-            </div>
-          </div>
-        );
-      })}
+      {blogs.map((blog) => (
+        <ArticleLink
+          key={blog.id}
+          title={blog.title}
+          description={blog.description}
+          id={blog.id}
+          folder="blog"
+        />
+      ))}
     </div>
   );
 }

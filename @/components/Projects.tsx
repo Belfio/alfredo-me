@@ -1,3 +1,5 @@
+import ArticleLink from "./ArticleLink";
+
 export type Project = {
   name: string;
   description: string;
@@ -7,14 +9,16 @@ export type Project = {
 
 export default function Projects({ projects }: { projects: Project[] }) {
   return (
-    <div id="projects" className=" ">
+    <div id="projects" className="my-8 ">
       <h1>Projects</h1>
       {projects.map((project) => (
-        <div key={project.name}>
-          <h3>{project.name}</h3>
-          <p>{project.description}</p>
-          <div dangerouslySetInnerHTML={{ __html: project.html }} />
-        </div>
+        <ArticleLink
+          key={project.id}
+          title={project.name}
+          description={project.description}
+          id={project.id}
+          folder="project"
+        />
       ))}
     </div>
   );

@@ -20,6 +20,7 @@ export default defineConfig({
       ignoredRouteFiles: ["**/*.css"],
       publicPath: "/build/",
       serverBuildPath: "build/index.js",
+      include: ["**/*.md"],
     }),
     tsconfigPaths(),
   ],

@@ -1,5 +1,9 @@
-import type { MetaFunction } from "@remix-run/node";
+import { json, LoaderFunctionArgs, type MetaFunction } from "@remix-run/node";
 import Header from "@/components/Header";
+import { useLoaderData } from "@remix-run/react";
+import { getBlog } from "~/files.server";
+import { Blog } from "@/components/Blogs";
+import Article from "@/components/Article";
 
 export const meta: MetaFunction = () => {
   return [
@@ -8,36 +12,23 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export default function Blog() {
+export default function BlogPage() {
+  const { blog } = useLoaderData<typeof loader>() as { blog: Blog };
   return (
-    <div className="bg-red-500">
-      <Header />
-      <h1>Welcome to Remix a</h1>
-      <ul>
-        <li>
-          <a
-            target="_blank"
-            href="https://remix.run/tutorials/blog"
-            rel="noreferrer"
-          >
-            Questo è il sito di Alfredo
-          </a>
-        </li>
-        <li>
-          <a
-            target="_blank"
-            href="https://remix.run/tutorials/jokes"
-            rel="noreferrer"
-          >
-            Deep Dive Jokes App Tutorial
-          </a>
-        </li>
-        <li>
-          <a target="_blank" href="https://remix.run/docs" rel="noreferrer">
-            Remix Docs
-          </a>
-        </li>
-      </ul>
+    <div className="">
+      <Header className="mt-8" />
+      <Article html={blog.html} />
     </div>
   );
 }
+
+export const loader = async ({ params }: LoaderFunctionArgs) => {
+  const { blogId } = params;
+  if (!blogId) {
+    return json({
+      blog: { html: "Something went wrong :((", title: "", description: "" },
+    });
+  }
+  const blog = await getBlog(blogId);
+  return json({ blog });
+};

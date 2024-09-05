@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="./.sst/platform/config.d.ts" />
 
 export default $config({
@@ -8,7 +9,11 @@ export default $config({
       home: "aws",
     };
   },
+
   async run() {
-    new sst.aws.Remix("MyWeb");
+    const site = new sst.aws.Remix("Alfredo-Site");
+    return {
+      url: site.url,
+    };
   },
 });

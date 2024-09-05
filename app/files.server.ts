@@ -12,27 +12,44 @@ function readFile(file: string): string {
   return fs.readFileSync(file, "utf8");
 }
 
-function parseMarkdown(content: string): string | Promise<string> {
-  return parse(content);
+async function parseMarkdown(content: string): Promise<{
+  html: string;
+  name: string;
+  description: string;
+}> {
+  try {
+    const html = await parse(content);
+    const name = content.split("# ")[1].split("\n")[0];
+    const description = content.split("# ")[2].split("\n")[0];
+    return { html, name, description };
+  } catch {
+    return { html: "", name: "", description: "" };
+  }
 }
 
 export async function getProjects(): Promise<Project[]> {
-  // print me in consol.log the path to this here
-  console.log(path.resolve());
-
   // load all files from the projects folder
-  const projectTitles = getFiles(path.join(path.resolve(), "./@/projects"));
-  console.log(projectTitles);
+  console.log("Ci stiamo provando");
+  const folderPath =
+    process.env.NODE_ENV === "development"
+      ? path.join(path.resolve(), "./@/projects")
+      : path.join(__dirname, "..", "./@/projects");
+  console.log(folderPath);
+  const projectTitles = getFiles(folderPath);
+
+  //   const projectTitles = getFiles(path.join(path.resolve(), "./@/projects"));
+
+  //   read each file, parse using markdown and get the content
   //   read each file, parse using markdown and get the content
   const projects: Project[] = await Promise.all(
     projectTitles.map(async (project) => {
       const content = readFile(
         path.join(path.resolve(), "./@/projects", project)
       );
-      const html = await parseMarkdown(content);
+      const { html, name, description } = await parseMarkdown(content);
       return {
-        name: project,
-        description: project,
+        name: name,
+        description,
         id: project,
         html,
       };
@@ -44,16 +61,19 @@ export async function getProjects(): Promise<Project[]> {
 
 export async function getBlogs(): Promise<Blog[]> {
   // load all files from the projects folder
-  const BlogsTitles = getFiles(path.join(path.resolve(), "./@/blogs"));
+  //   const BlogsTitles = getFiles(path.join(path.resolve(), "./@/blogs"));
+  return [];
+  const folderPath = path.join(__dirname, "..", "./@/blogs");
+  const BlogsTitles = getFiles(folderPath);
 
   //   // read each file, parse using markdown and get the content
   const blogs: Blog[] = await Promise.all(
     BlogsTitles.map(async (blog) => {
       const content = readFile(path.join(path.resolve(), "./@/blogs", blog));
-      const html = await parseMarkdown(content);
+      const { html, name, description } = await parseMarkdown(content);
       return {
-        title: blog,
-        description: blog,
+        title: name,
+        description: description,
         id: blog,
         html,
       };
@@ -61,4 +81,26 @@ export async function getBlogs(): Promise<Blog[]> {
   );
 
   return blogs;
+}
+
+export async function getProject(id: string): Promise<Project> {
+  const content = readFile(path.join(path.resolve(), "./@/projects", id));
+  const { html, name, description } = await parseMarkdown(content);
+  return {
+    name,
+    description,
+    id,
+    html,
+  };
+}
+
+export async function getBlog(id: string): Promise<Blog> {
+  const content = readFile(path.join(path.resolve(), "./@/blogs", id));
+  const { html, name, description } = await parseMarkdown(content);
+  return {
+    title: name,
+    description,
+    id,
+    html,
+  };
 }

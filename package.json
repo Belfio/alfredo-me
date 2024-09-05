@@ -1,5 +1,5 @@
 {
-  "name": "alfredo",
+  "name": "alfredo-site",
   "private": true,
   "sideEffects": false,
   "type": "module",
@@ -19,6 +19,7 @@
     "@remix-run/serve": "^2.8.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
+    "dompurify": "^3.1.6",
     "isbot": "^4.1.0",
     "marked": "^14.1.1",
     "react": "^18.2.0",
@@ -29,6 +30,7 @@
   },
   "devDependencies": {
     "@remix-run/dev": "^2.8.1",
+    "@types/dompurify": "^3.0.5",
     "@types/react": "^18.2.20",
     "@types/react-dom": "^18.2.7",
     "@typescript-eslint/eslint-plugin": "^6.7.4",

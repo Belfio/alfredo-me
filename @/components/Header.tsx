@@ -16,17 +16,17 @@ export default function Header({ className }: { className?: string }) {
             </a>
           </li>
           <li>
-            <a href="#projects" rel="noreferrer">
+            <a href="/#projects" rel="noreferrer">
               Projects
             </a>
           </li>
           <li>
-            <a href="#blogs" rel="noreferrer">
+            <a href="/#blogs" rel="noreferrer">
               Blogs
             </a>
           </li>
           <li>
-            <a href="#/contact" rel="noreferrer">
+            <a href="/#contact" rel="noreferrer">
               Contact
             </a>
           </li>
