@@ -1,7 +1,6 @@
 import { type MetaFunction } from "@remix-run/node";
 import Header from "@/components/Header";
 import { useParams } from "@remix-run/react";
-
 import Article from "@/components/Article";
 import useMarkdown from "@/hooks/useMarkdown";
 import { useEffect, useState } from "react";
@@ -18,10 +17,10 @@ export default function BlogPage() {
   const { blogId } = useParams();
   const [blog, setBlog] = useState<Blog | undefined>(undefined);
   const { getBlog } = useMarkdown();
-  console.log("blogId", blogId);
+
   useEffect(() => {
     const blog = getBlog(blogId || "");
-    console.log("blog", blog);
+
     setBlog(blog);
   }, [blogId, getBlog]);
 

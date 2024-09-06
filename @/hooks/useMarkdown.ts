@@ -47,7 +47,7 @@ async function getBlogs(): Promise<Blog[]> {
   const fileNames: string[] = Object.values(modules).map(
     (module) => module.default
   );
-  console.log("fileNames", fileNames);
+
   const files = await parseFiles(fileNames); // Await the promise here
 
   const blogs = await Promise.all(

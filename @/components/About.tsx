@@ -1,7 +1,7 @@
 export default function About() {
   return (
     <p id="about">
-      Hey I am Alfredo, Software and Biomedical Engineer. <br />I love art (
+      Hey this is Alfredo, Software and Biomedical Engineer. <br />I love art (
       <a href="https://www.hockney.com/home">1</a>,
       <a href="https://www.instagram.com/hiroshipenguinjoe/">2</a>), health-tech
       (<a href="https://www.nekohealth.com/gb/en">1</a>,
