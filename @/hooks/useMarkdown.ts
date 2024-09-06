@@ -10,8 +10,8 @@ type Module = {
 export default function useMarkdown(): {
   blogs: Blog[];
   projects: Project[];
-  getProject: (id: string) => Promise<Project | undefined>;
-  getBlog: (id: string) => Promise<Blog | undefined>;
+  getProject: (id: string) => Project | undefined;
+  getBlog: (id: string) => Blog | undefined;
 } {
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
@@ -24,15 +24,20 @@ export default function useMarkdown(): {
     fetchData();
   }, []);
 
-  async function getProject(id: string): Promise<Project | undefined> {
+  function getProject(id: string): Project | undefined {
     const project = projects.find((project) => project.id === id);
     return project;
   }
-  async function getBlog(id: string): Promise<Blog | undefined> {
+  function getBlog(id: string): Blog | undefined {
     const blog = blogs.find((blog) => blog.id === id);
     return blog;
   }
-  return { blogs, projects, getProject, getBlog };
+  return {
+    blogs,
+    projects,
+    getProject: (id) => getProject(id),
+    getBlog: (id) => getBlog(id),
+  };
 }
 
 async function getBlogs(): Promise<Blog[]> {
@@ -42,16 +47,16 @@ async function getBlogs(): Promise<Blog[]> {
   const fileNames: string[] = Object.values(modules).map(
     (module) => module.default
   );
-
+  console.log("fileNames", fileNames);
   const files = await parseFiles(fileNames); // Await the promise here
 
   const blogs = await Promise.all(
-    files.map(async (file) => {
+    files.map(async (file, i) => {
       const { html, name, description } = await parseMarkdown(file);
       return {
         title: name,
         description,
-        id: file,
+        id: fileNames[i].split(".md")[0].replace(/[/@]/g, "_"),
         html,
       };
     })
@@ -70,12 +75,12 @@ async function getProjects(): Promise<Project[]> {
 
   const files = await parseFiles(fileNames); // Await the promise here
   const projects = await Promise.all(
-    files.map(async (file) => {
+    files.map(async (file, i) => {
       const { html, name, description } = await parseMarkdown(file);
       return {
         name: name,
         description,
-        id: file,
+        id: fileNames[i].split(".md")[0].replace(/[/@]/g, "_"),
         html,
       };
     })

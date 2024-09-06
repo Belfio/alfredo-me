@@ -1,8 +1,10 @@
-import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
+import type { MetaFunction } from "@remix-run/node";
 import Header from "@/components/Header";
-import { json, useLoaderData, useParams } from "@remix-run/react";
+import { useParams } from "@remix-run/react";
 import Article from "@/components/Article";
 import useMarkdown from "@/hooks/useMarkdown";
+import { Project } from "@/components/Projects";
+import { useState, useEffect } from "react";
 
 export const meta: MetaFunction = () => {
   return [
@@ -11,25 +13,18 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export default async function Projects() {
+export default function Projects() {
+  const [project, setProject] = useState<Project | undefined>(undefined);
   const { projectId } = useParams();
   const { getProject } = useMarkdown();
-  const project = await getProject(projectId || "");
+  useEffect(() => {
+    const project = getProject(projectId || "");
+    setProject(project);
+  }, [projectId, getProject]);
   return (
     <div className="">
       <Header className="mt-8" />
-      <Article html={project?.html || ""} />
+      {project && <Article html={project?.html} />}
     </div>
   );
 }
-
-export const loader = async ({ params }: LoaderFunctionArgs) => {
-  const { projectId } = params;
-  if (!projectId) {
-    return json({
-      project: { html: "Something went wrong :((", name: "", description: "" },
-    });
-  }
-  const project = await getProject(projectId);
-  return json({ project });
-};

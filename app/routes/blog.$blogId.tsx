@@ -1,9 +1,11 @@
-import { json, LoaderFunctionArgs, type MetaFunction } from "@remix-run/node";
+import { type MetaFunction } from "@remix-run/node";
 import Header from "@/components/Header";
-import { useLoaderData, useParams } from "@remix-run/react";
+import { useParams } from "@remix-run/react";
 
 import Article from "@/components/Article";
 import useMarkdown from "@/hooks/useMarkdown";
+import { useEffect, useState } from "react";
+import { Blog } from "@/components/Blogs";
 
 export const meta: MetaFunction = () => {
   return [
@@ -12,25 +14,21 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export default async function BlogPage() {
+export default function BlogPage() {
   const { blogId } = useParams();
+  const [blog, setBlog] = useState<Blog | undefined>(undefined);
   const { getBlog } = useMarkdown();
-  const blog = await getBlog(blogId || "");
+  console.log("blogId", blogId);
+  useEffect(() => {
+    const blog = getBlog(blogId || "");
+    console.log("blog", blog);
+    setBlog(blog);
+  }, [blogId, getBlog]);
+
   return (
     <div className="">
       <Header className="mt-8" />
-      <Article html={blog?.html || ""} />
+      {blog && <Article html={blog?.html} />}
     </div>
   );
 }
-
-export const loader = async ({ params }: LoaderFunctionArgs) => {
-  const { blogId } = params;
-  if (!blogId) {
-    return json({
-      blog: { html: "Something went wrong :((", title: "", description: "" },
-    });
-  }
-  const blog = await getBlog(blogId);
-  return json({ blog });
-};
