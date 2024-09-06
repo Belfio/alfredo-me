@@ -24,6 +24,7 @@ export default defineConfig({
     }),
     tsconfigPaths(),
   ],
+  assetsInclude: ["**/*.md"],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./@"),

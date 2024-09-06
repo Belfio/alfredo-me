@@ -1,9 +1,8 @@
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import Header from "@/components/Header";
-import { json, useLoaderData } from "@remix-run/react";
-import { getProject } from "~/files.server";
-import { Project } from "@/components/Projects";
+import { json, useLoaderData, useParams } from "@remix-run/react";
 import Article from "@/components/Article";
+import useMarkdown from "@/hooks/useMarkdown";
 
 export const meta: MetaFunction = () => {
   return [
@@ -12,12 +11,14 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export default function Projects() {
-  const { project } = useLoaderData<typeof loader>() as { project: Project };
+export default async function Projects() {
+  const { projectId } = useParams();
+  const { getProject } = useMarkdown();
+  const project = await getProject(projectId || "");
   return (
     <div className="">
       <Header className="mt-8" />
-      <Article html={project.html} />
+      <Article html={project?.html || ""} />
     </div>
   );
 }

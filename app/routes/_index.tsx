@@ -1,15 +1,11 @@
 import type { MetaFunction } from "@remix-run/node";
-import {
-  isRouteErrorResponse,
-  useLoaderData,
-  useRouteError,
-} from "@remix-run/react";
+import { isRouteErrorResponse, useRouteError } from "@remix-run/react";
 import Header from "@/components/Header";
 import About from "@/components/About";
-import Projects, { Project } from "@/components/Projects";
-import Blogs, { Blog } from "@/components/Blogs";
-import { getBlogs, getProjects } from "~/files.server";
+import Projects from "@/components/Projects";
+import Blogs from "@/components/Blogs";
 import Contact from "@/components/Contact";
+import useMarkdown from "@/hooks/useMarkdown";
 
 export const meta: MetaFunction = () => {
   return [
@@ -19,8 +15,7 @@ export const meta: MetaFunction = () => {
 };
 
 export default function Index() {
-  const { projects, blogs } = useLoaderData<typeof loader>();
-
+  const { blogs, projects } = useMarkdown();
   return (
     <div className="">
       <Header className="mt-8" />
@@ -32,15 +27,6 @@ export default function Index() {
       </div>
     </div>
   );
-}
-
-export async function loader() {
-  const projects: Project[] = await getProjects();
-  const blogs: Blog[] = await getBlogs();
-  return {
-    projects,
-    blogs,
-  };
 }
 
 export function ErrorBoundary() {
