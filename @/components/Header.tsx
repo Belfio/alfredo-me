@@ -9,24 +9,40 @@ export default function Header({ className }: { className?: string }) {
           className
         )}
       >
-        <ul className="flex gap-4">
+        <ul className="flex gap-4 ">
           <li>
-            <a href="/#home" rel="noreferrer">
+            <a
+              href="/#home"
+              rel="noreferrer"
+              className="text-gray-900 visited:text-gray-900 hover:text-blue-800"
+            >
               Home
             </a>
           </li>
           <li>
-            <a href="/#projects" rel="noreferrer">
+            <a
+              href="/#projects"
+              rel="noreferrer"
+              className="text-gray-900 visited:text-gray-900 hover:text-blue-800"
+            >
               Projects
             </a>
           </li>
           <li>
-            <a href="/#blogs" rel="noreferrer">
-              Blogs
+            <a
+              href="/#blog"
+              rel="noreferrer"
+              className="text-gray-900 visited:text-gray-900 hover:text-blue-800"
+            >
+              Blog
             </a>
           </li>
           <li>
-            <a href="/#contact" rel="noreferrer">
+            <a
+              href="/#contact"
+              rel="noreferrer"
+              className="text-gray-900 visited:text-gray-900 hover:text-blue-800"
+            >
               Contact
             </a>
           </li>

@@ -9,8 +9,8 @@ export type Blog = {
 
 export default function Blogs({ blogs }: { blogs: Blog[] }) {
   return (
-    <div id="blogs" className="my-8">
-      <h1>Blogs</h1>
+    <div id="blog" className="my-8">
+      <h1>Blog</h1>
       {blogs.map((blog) => (
         <ArticleLink
           key={blog.id}
