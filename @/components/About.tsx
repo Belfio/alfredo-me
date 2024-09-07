@@ -50,7 +50,7 @@ export default function About() {
         <a href="https://www.instagram.com/hiroshipenguinjoe/">3</a>),
         health-tech (<a href="https://www.nekohealth.com/gb/en">1</a>,
         <a href="https://www.apple.com/it/apple-watch-ultra-2/">2</a>), design
-        enginnering (<a href="https://www.apple.com">1</a>,
+        engineering (<a href="https://www.apple.com">1</a>,
         <a href="https://www.pelikanpens.co.uk/collections/pelikan-classic-200-205/products/pelikan-m200-fountain-pen-black">
           2
         </a>
