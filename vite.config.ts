@@ -20,11 +20,11 @@ export default defineConfig({
       ignoredRouteFiles: ["**/*.css"],
       publicPath: "/build/",
       serverBuildPath: "build/index.js",
-      include: ["**/*.md"],
+      include: ["**/*.md", "**/*.png"],
     }),
     tsconfigPaths(),
   ],
-  assetsInclude: ["**/*.md"],
+  assetsInclude: ["**/*.md", "**/*.png"],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./@"),

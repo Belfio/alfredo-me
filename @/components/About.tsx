@@ -1,7 +1,8 @@
+import Skipper from "@/assets/skipper.png";
 export default function About() {
   return (
     <>
-      <img src="@/assets/skipper.png" alt="Alfredo" className="w-[200px]" />
+      <img src={Skipper} alt="Alfredo" className="w-[200px]" />
       <p id="about" className="pt-8">
         Hey this is Alfredo, I am Software and Biomedical Engineer.
       </p>
