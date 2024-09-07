@@ -49,8 +49,8 @@ export default function About() {
         <a href="https://trinitymitchell.com">2</a>,
         <a href="https://www.instagram.com/hiroshipenguinjoe/">3</a>),
         health-tech (<a href="https://www.nekohealth.com/gb/en">1</a>,
-        <a href="https://www.apple.com/it/apple-watch-ultra-2/">2</a>), design
-        engineering (<a href="https://www.apple.com">1</a>,
+        <a href="https://www.apple.com/it/apple-watch-ultra-2/">2</a>), design &
+        engineering (<a href="https://www.apple.com/mac-pro/">1</a>,
         <a href="https://www.pelikanpens.co.uk/collections/pelikan-classic-200-205/products/pelikan-m200-fountain-pen-black">
           2
         </a>
@@ -59,14 +59,14 @@ export default function About() {
         <a href="https://www.astralcodexten.com">2</a>,
         <a href="https://paulgraham.com/">3</a>,
         <a href="https://x.com/dieworkwear">4</a>,
-        <a href="https://x.com/matthewclifford">4</a>,
-        <a href="https://x.com/nntaleb">5</a>,
-        <a href="https://x.com/mattyglesias">6</a>), and innovations (
+        <a href="https://x.com/matthewclifford">5</a>,
+        <a href="https://x.com/nntaleb">6</a>,
+        <a href="https://x.com/mattyglesias">7</a>), and innovations (
         <a href="https://bitcoin.org/bitcoin.pdf">1</a>,
         <a href="https://it.wikipedia.org/wiki/Apple_Silicon">2</a>,
         <a href="https://www.spacex.com/vehicles/starship/">3</a>,
         <a href="https://deepfission.com">4</a>,
-        <a href="https://openai.com">2</a>,<a href="https://solana.com">5</a>
+        <a href="https://openai.com">5</a>,<a href="https://solana.com">6</a>
         ).
       </p>
     </>
