@@ -10,7 +10,7 @@ I started the development journey by following a course on [Udemy](https://www.u
 Here is where things got me into trouble and where the problems mentioned in the course became true.
 <br><br><br>
 Please note, it is 100% a skills gap. However, learning how to handle different versions of Solidity so early in the development journey is not a skill I want to learn.
-The issues started when I tried to deploy multiple smart contracts, talking to each other, and all based on ERC templates. For some reason that I could not figure out the different versions of Solidity used in the templates and on my project collided.
+The issues started when I tried to deploy multiple smart contracts, talking to each other, and all based on ERC templates. For some reason that I could not figure out the different versions of Solidity used in the templates and on my project collided. I wish I could provide more detailed information but I don;t remember more, I need to get back into the algo and post it here, I'll do it another time.
 <br><br><br>
 
 Coupled with the fact that Optimism is still not very cheap and fast, especially compared to Solana.
