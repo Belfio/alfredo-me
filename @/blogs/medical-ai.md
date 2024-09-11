@@ -11,7 +11,9 @@ Algorithms:
 
 - hugging-face
 - https://www.kaggle.com/competitions?searchQuery=cancer
+- https://github.com/medtorch/awesome-healthcare-ai?tab=readme-ov-file
 - https://github.com/seokkim/Awesome-Medical-Imaging
+- https://github.com/AI-in-Health/MedLLMsPracticalGuide
   <br>
   <br>
   Datasets:
@@ -37,7 +39,8 @@ Algorithms:
 - 3. Each algo in a clear ranking (like the LLMs ranking we have now)
 - 4. Ability for people to access the algos / datasets
 - 5. Ability for people to upload data and algos
-
+<br>
+<br>
 !!!! Each algo needs to:
 
 - provide what data was used for trianing (ideally OS) and needs to get tested by the platform.
