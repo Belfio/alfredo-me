@@ -44,6 +44,7 @@ async function getBlogs(): Promise<Blog[]> {
   const modules = import.meta.glob<Module>("@/blogs/*.md", {
     eager: true,
   });
+  console.log("modules", modules);
   const fileNames: string[] = Object.values(modules).map(
     (module) => module.default
   );

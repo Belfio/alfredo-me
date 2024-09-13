@@ -34,11 +34,16 @@ Algorithms:
 
 <br>
 <br>
-- 1. Datasets section about different deseases or different body parts
-- 2. Each datasets linked to a ranking of the best algos
-- 3. Each algo in a clear ranking (like the LLMs ranking we have now)
-- 4. Ability for people to access the algos / datasets
-- 5. Ability for people to upload data and algos
+1. Datasets section about different deseases or different body parts
+
+2. Each datasets linked to a ranking of the best algos
+
+3. Each algo in a clear ranking (like the LLMs ranking we have now)
+
+4. Ability for people to access the algos / datasets
+
+5. Ability for people to upload data and algos
+
 <br>
 <br>
 !!!! Each algo needs to:
