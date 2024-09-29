@@ -4,7 +4,7 @@ export default function About() {
     <>
       <img src={Skipper} alt="Alfredo" className="w-[200px]" />
       <p id="about" className="pt-8">
-        Hey this is Alfredo, I am Software and Biomedical Engineer.
+        Hey this is Alfredo, I am CTO/CPO, Biomedical and Software Engineer.
       </p>
       <p className="pt-2">
         My previous projects include:{" "}
@@ -17,7 +17,7 @@ export default function About() {
       </p>
 
       <p className="pt-2">
-        I love music (
+        Talk to me about music (
         <a href="https://open.spotify.com/track/5mqop2IekTZWc2hRE7NpmW?si=0bd484da24e643cc">
           1
         </a>
