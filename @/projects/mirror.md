@@ -2,8 +2,7 @@
 
 ## Passive video health monitoring system
 
-AI is getting to the point that it can be as good as any docotr. What is missing in the system though is a way to gather data. The doctod can talk to you, look at you and ask you to go thorugh exams.
-AI cannot (yet). A way to build up AI knowledge about you though is if a system is monitoring you. Monitoring often fails if it is a task a human has to do and repeat. However when it is passive and needs minimal intervention, it should work!
+AI is advancing to the point where it can be as good as any doctor. However, what is missing in the system is a way to gather data. A doctor can talk to you, observe you, and ask you to undergo exams. AI cannot (yet). A way to build up AI's knowledge about you is through a system that monitors you. Monitoring often fails if it requires a human to perform and repeat the task. However, when it is passive and requires minimal intervention, it should work!
 
 ## What
 
