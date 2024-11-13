@@ -125,9 +125,36 @@ async function parseMarkdown(content: string): Promise<{
     const html = await parse(content);
     const name = content.split("# ")[1].split("\n")[0];
     const description = content.split("# ")[2].split("\n")[0];
-    const createdAt = content.split("\n").pop() || "";
+    const createdAt = getDateFromContent(content);
     return { html, name, description, createdAt };
   } catch {
     return { html: "", name: "", description: "", createdAt: "" };
   }
+}
+
+function getDateFromContent(content: string): string {
+  const lines = content
+    .split("\n")
+    .map((line) => line.trim())
+    .filter((line) => line !== "");
+
+  let createdAt = "";
+  for (let i = lines.length - 1; i >= 0; i--) {
+    const line = lines[i];
+    if (isValidDate(line)) {
+      createdAt = line;
+      break;
+    }
+  }
+  return createdAt;
+}
+
+function isValidDate(dateString: string): boolean {
+  // Regex to match YYYY-MM-DD format
+  const regex = /^\d{4}-\d{2}-\d{2}$/;
+  if (!regex.test(dateString)) {
+    return false;
+  }
+  const date = new Date(dateString);
+  return !isNaN(date.getTime());
 }
