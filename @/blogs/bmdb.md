@@ -27,3 +27,4 @@ tbd
 
 I'm building a docker image that can take a jupyter notebook .ipynb and the selected datasets adn then print in a database the result of the model classification.
 Fun!
+2024-10-13

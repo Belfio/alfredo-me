@@ -19,3 +19,4 @@ Many functions that a doctor executes are based on visual analysis. I assume tha
 1 - AI system, and check what's achievable now.
 2 - HW system, cameras and lights
 3 - Connection
+2024-10-20

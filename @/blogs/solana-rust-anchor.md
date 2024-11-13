@@ -29,3 +29,4 @@ pub struct Initialize<'info> {
 What the hell was that?
 Turned out it is not too far from what this could be if written in Typescript, infact Rust is a strongly typed programming language, and together with some C patterns (measure memory and overflows) and new Rust specific patterns (ownership!), I am almost enjoying it.
 I need way more prep to write something that makes sense and builds with Rust compared to Typescript, but if it compiles, it is likely to work.
+2024-11-13

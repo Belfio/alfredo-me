@@ -50,3 +50,5 @@ Algorithms:
 !!!! Each algo needs to:
 
 - provide what data was used for trianing (ideally OS) and needs to get tested by the platform.
+
+2024-09-01

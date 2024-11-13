@@ -6,3 +6,4 @@ Can I create a website for each business for free, build their online shop and g
 Would they be happy for me to build it?
 
 Shall I create one easily? I can use a subdomain for each new website. short domain and long subdomain.
+2024-09-01

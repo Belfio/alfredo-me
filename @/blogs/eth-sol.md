@@ -28,3 +28,4 @@ While I heard the Rust community is awful, they provide some (not so great) [lea
 Solana instead seems to have a very good [free course](https://solana.com/it/docs/intro/quick-start).
 
 Let's start!
+2024-09-11

@@ -21,3 +21,4 @@ This system is built in the Solana blockchain and runs with its stablecoin pegge
 ## Legally how
 
 Legally it is not yet recognised and can incur in prosecution. We will be working on a set of legal contracts to make this entity as legal as possible and follow the Limited Liability standards.
+2024-10-02

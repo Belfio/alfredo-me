@@ -45,3 +45,4 @@ Smart!
 ## Tesla
 
 A similat ToC was delivered by Tesla and their mission to move from fossil fuel to electricity and green energy. They created electric cars so good compared to the petrol cars, that will move the market towards electrivity,
+2024-11-12
