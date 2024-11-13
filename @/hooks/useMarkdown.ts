@@ -44,7 +44,7 @@ async function getBlogs(): Promise<Blog[]> {
   const modules = import.meta.glob<Module>("@/blogs/*.md", {
     eager: true,
   });
-  console.log("modules", modules);
+
   const fileNames: string[] = Object.values(modules).map(
     (module) => module.default
   );
@@ -53,12 +53,13 @@ async function getBlogs(): Promise<Blog[]> {
 
   const blogs = await Promise.all(
     files.map(async (file, i) => {
-      const { html, name, description } = await parseMarkdown(file);
+      const { html, name, description, createdAt } = await parseMarkdown(file);
       return {
         title: name,
         description,
         id: fileNames[i].split(".md")[0].replace(/[/@]/g, "_"),
         html,
+        createdAt,
       };
     })
   );
@@ -75,18 +76,27 @@ async function getProjects(): Promise<Project[]> {
   );
 
   const files = await parseFiles(fileNames); // Await the promise here
-  const projects = await Promise.all(
-    files.map(async (file, i) => {
-      const { html, name, description } = await parseMarkdown(file);
-      return {
-        name: name,
-        description,
-        id: fileNames[i].split(".md")[0].replace(/[/@]/g, "_"),
-        html,
-      };
-    })
+  const projects = (
+    await Promise.all(
+      files.map(async (file, i) => {
+        const { html, name, description, createdAt } = await parseMarkdown(
+          file
+        );
+        if (!name || !description || !createdAt) {
+          return;
+        }
+        return {
+          name: name,
+          description,
+          id: fileNames[i].split(".md")[0].replace(/[/@]/g, "_"),
+          html,
+          createdAt,
+        };
+      })
+    )
+  ).filter((project: Project | undefined): project is Project =>
+    Boolean(project)
   );
-
   return projects;
 }
 
@@ -94,7 +104,11 @@ async function parseFiles(fileNames: string[]): Promise<string[]> {
   const files = await Promise.all(
     fileNames.map(async (file: string) => {
       return fetch(file)
-        .then((res) => res.text())
+        .then((res) => {
+          const creationDate = res.headers.get("last-modified");
+
+          return res.text().then((text) => `${text}\n${creationDate}`);
+        })
         .catch((err) => {
           console.log("err", err);
           return "";
@@ -109,13 +123,15 @@ async function parseMarkdown(content: string): Promise<{
   html: string;
   name: string;
   description: string;
+  createdAt: string;
 }> {
   try {
     const html = await parse(content);
     const name = content.split("# ")[1].split("\n")[0];
     const description = content.split("# ")[2].split("\n")[0];
-    return { html, name, description };
+    const createdAt = content.split("\n").pop() || "";
+    return { html, name, description, createdAt };
   } catch {
-    return { html: "", name: "", description: "" };
+    return { html: "", name: "", description: "", createdAt: "" };
   }
 }
