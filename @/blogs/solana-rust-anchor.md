@@ -2,8 +2,7 @@
 
 ## My first experience with Rust and Anchor
 
-I left Ethereum and the "simple" Solidity more than a month ago now. My first impression with Rust was the usual dread that you get when you see something you have no clue about.
-
+I left Ethereum and the "simple" Solidity more than a month ago now. My first impression with Rust was the usual dread that you get when you see something you have no clue about. For example:
 <br />
 <br />
 
@@ -11,7 +10,7 @@ I left Ethereum and the "simple" Solidity more than a month ago now. My first im
 use anchor_lang::prelude::*;
 
 #[program]
-pub mod inc_factory {
+pub mod my_program {
     use super::*;
 
 pub fn initialize(ctx:Context<Init>)-> Result<()>{}
@@ -21,7 +20,7 @@ pub fn initialize(ctx:Context<Init>)-> Result<()>{}
 #[instruction(company_name: String)]
 pub struct Initialize<'info> {
     #[account(mut)]
-    pub company_registry: Account<'info, CompanyRegistry>,
+    pub company_registry: Account<'info>,
 
 }
 ```
