@@ -1,36 +1,52 @@
-# Welcome to Remix + Vite!
+# Alfredo's blog
 
-📖 See the [Remix docs](https://remix.run/docs) and the [Remix Vite docs](https://remix.run/docs/en/main/future/vite) for details on supported features.
+## This blog runs on SST, Remix and Markdown to html service I created.
 
-## Development
+## Installation
 
-Run the Vite dev server:
+To allow autodating to the markdown I am using git hooks.
 
-```shellscript
-npm run dev
+This is how you set them up.
+Steps:
+Navigate to Git Hooks Directory:
+
+```sh
+cd ./.git/hooks
+```
+
+Create a Pre-Commit Hook (pre-commit):
+
+```sh
+
+   #!/bin/bash
+   for file in $(git diff --cached --name-only --diff-filter=ACM | grep '\.md$'); do
+     echo "$(date +'%Y-%m-%d')" >> "$file"
+     git add "$file"
+   done
+```
+
+Make the Hook Executable:
+
+```sh
+   chmod +x pre-commit
+```
+
+Usage:
+
+1. Make changes to any Markdown file.
+1. Stage the changes (git add).
+1. Commit (git commit).
+1. The pre-commit hook appends the current date to the saved files automatically.
+
+## Dev
+
+```sh
+npx sst dev --stage dev
 ```
 
 ## Deployment
 
-First, build your app for production:
-
 ```sh
-npm run build
+npx sst deploy --stage alfredo
 ```
-
-Then run the app in production mode:
-
-```sh
-npm start
-```
-
-Now you'll need to pick a host to deploy it to.
-
-### DIY
-
-If you're familiar with deploying Node applications, the built-in Remix app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
-
-- `build/server`
-- `build/client`
+2024-11-13

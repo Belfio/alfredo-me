@@ -104,11 +104,7 @@ async function parseFiles(fileNames: string[]): Promise<string[]> {
   const files = await Promise.all(
     fileNames.map(async (file: string) => {
       return fetch(file)
-        .then((res) => {
-          const creationDate = res.headers.get("last-modified");
-
-          return res.text().then((text) => `${text}\n${creationDate}`);
-        })
+        .then((res) => res.text())
         .catch((err) => {
           console.log("err", err);
           return "";
