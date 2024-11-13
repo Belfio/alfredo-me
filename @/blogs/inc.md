@@ -15,5 +15,4 @@ Cosa possiamo fare con questa roba
 
 Ciao amico cosa mi racconti?
 **Paranoia!!**
-
-_Paranoietta_
+2024-11-13
