@@ -23,9 +23,9 @@ Create a Pre-Commit Hook (pre-commit):
 # Iterate over all staged Markdown files
 for file in $(git diff --cached --name-only --diff-filter=ACM | grep '\.md$'); do
   # Check if the file already contains a date in YYYY-MM-DD format
-  if ! grep -qE '^[0-9]{4}-[0-9]{2}-[0-9]{2}$' "$file"; then
+  if ! grep -qE '[0-9]{4}-[0-9]{2}-[0-9]{2}$' "$file"; then
     # Append the current date with a line break to the file
-    echo "<br />$(date +'%Y-%m-%d')" >> "$file"
+    echo -e "<br />\n$(date +'%Y-%m-%d')" >> "$file"
     # Add the modified file back to the staging area
     git add "$file"
   fi
