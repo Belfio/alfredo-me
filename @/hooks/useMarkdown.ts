@@ -124,10 +124,12 @@ async function parseMarkdown(content: string): Promise<{
   try {
     const html = await parse(content);
     const name = content.split("# ")[1].split("\n")[0];
+    // console.log("name", name);
     const description = content.split("# ")[2].split("\n")[0];
     const createdAt = getDateFromContent(content);
     return { html, name, description, createdAt };
   } catch {
+    console.log("error", name);
     return { html: "", name: "", description: "", createdAt: "" };
   }
 }

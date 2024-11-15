@@ -1,13 +1,30 @@
-# AI Race
+# AI products
 
-## Distribution and AI
+## Matt Clifford's: "There are no AI-shaped holes lying around"
 
-While many companies are developing diverse AI solutions with varying pricing models, the level of distribution significantly impacts how these services are adopted and utilized by the general public.
+As of the 14th of November, seems like OpenAI is underwhelmed by the progress of their LLM. It could represent a slow down in the evolution and their quest to AGI.
+Nevertheless, what we got so far I believe is amazingly impressive and there are a few tools that have not yet been deployed to their full potential yet.
+One of the reasons for this is as Matt Clifford said: "There are no AI-shaped holes lying around". Companies' processes can be improved, but the leap in improvement is limited by the the way AI is being deployed. AI won't fill the hole of a process inefficiency. That's not how it should work. AI is here to create new processes.
+Instead of a step improvement, AI should review the whole goal of the process from the ground up, and a new process that leverages AI should come out. I would like to give an example: email clients.
 
-For instance, Apple has yet to introduce a comprehensive AI offering. Apple Intelligence needs to demonstrate its capabilities compared to established models like GPT-4 or Claude. Personally, I frequently use GPT because I have installed dedicated applications on my laptop and phone. In contrast, Apple has the advantage of seamlessly deploying its AI solutions across billions of devices without requiring users to install separate apps. This widespread and effortless integration raises the question: who will bear the costs associated with services like GPT when Apple can offer similar functionalities natively?
+## Email Clients and AI
 
-Similarly, Google occupies a unique position with the extensive reach of Android and its dominance in the web ecosystem. Microsoft's integration of OpenAI into its operating system further consolidates its ability to disseminate AI technologies widely. This extensive distribution network presents significant challenges for competitors like Anthropic, which, despite leveraging AWS to deploy their APIs and power web backends, may find it difficult to compete on the same scale as these tech giants.
+At the moment email clients, working on a protocol older than HTTP, are still the main mean of async communication in business. People communicate via email and the email client allow people to exchange data.
 
-The overarching theme here is that control over distribution channels is a critical factor in the AI race. Companies that can embed their AI solutions directly into widely-used platforms stand to gain a substantial competitive edge, potentially overshadowing those that rely solely on separate applications or APIs.
+### Email Client + AI
 
-<br /> 2024-11-13
+Email clinet with AI is a an evolution of the usual email clinet, by the use of AI to imrpvoe the current process of reading and sending messages.
+Outlook for example allow you to read and summarize emails with AI copilot. Write an answer of check the grammar.
+
+### AI email client
+
+A redesigned approach to messages exchange that leverages AI, should start from first principles: why we use emails? Humans need to exchange information, learn and share data.
+We can isolate these 2 phases, learning and sharing. What are the best and most efficient ways of learning? It does depend on each individual. As a mean of comparison, current email client place text in a screen for you to read. An obvious evolution that can leverage AI is the creation of multimodal information delivery: audio, video, text. I personally really love the audio format as it takes my eyes away from the screen and I can listen to it while doing a light physical activity. So, can Ai gather information adn reshape it in a custom format for their users.
+Sharing data: sharing starts with the creation of new data and then with the process of delivering the data to other people. Again the creation can be approached ina custom manner and while I would love to just chat back to the AI to create an answer to an email, sometimes I need to check and provide more accurate data via a spreadsheet or an image or a deck. However the whole process can be sped up with the use of AI.
+In this world, does the AI become a CRM as well as en email client? Can it autopopulates data from intenrla information, email, external links like linkedin and search?
+
+Apple Siri, Google AI and Microsoft CoPilot are fantastically palced to make this happen. Will they?
+
+I am working to make this come true for a specific use case, Private Equity, hoping that whatever Microsoft or Apple come up with, won't be as well suited for them and their unique needs of financial reporting. Key for us will be speed of execution and data gathering, so that we can lock some clients in before being disrupted by AGI.
+<br />
+2024-11-15
