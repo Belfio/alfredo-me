@@ -33,22 +33,14 @@ Algorithms:
 
 ## The ideal website is:
 
-<br>
-<br>
-1. Datasets section about different deseases or different body parts
+1. Datasets section about different diseases or different body parts
+2. Each dataset linked to a ranking of the best algorithms
+3. Each algorithm in a clear ranking (like the LLMs ranking we have now)
+4. Ability for people to access the algorithms / datasets
+5. Ability for people to upload data and algorithms
 
-2. Each datasets linked to a ranking of the best algos
+!!!! Each algorithm needs to:
 
-3. Each algo in a clear ranking (like the LLMs ranking we have now)
-
-4. Ability for people to access the algos / datasets
-
-5. Ability for people to upload data and algos
-
-<br>
-<br>
-!!!! Each algo needs to:
-
-- provide what data was used for trianing (ideally OS) and needs to get tested by the platform.
+- provide what data was used for training (ideally OS) and needs to get tested by the platform.
 
 2024-09-01
