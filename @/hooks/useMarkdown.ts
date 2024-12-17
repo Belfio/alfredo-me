@@ -1,7 +1,7 @@
 import { parse } from "marked";
 import { Project } from "@/components/Projects";
 import { Blog } from "@/components/Blogs";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 type Module = {
   default: string;
@@ -12,10 +12,14 @@ export default function useMarkdown(): {
   projects: Project[];
   getProject: (id: string) => Project | undefined;
   getBlog: (id: string) => Blog | undefined;
+  loadFiles: () => Promise<void>;
 } {
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
-
+  const loadFiles = useCallback(async () => {
+    setBlogs(await getBlogs());
+    setProjects(await getProjects());
+  }, []);
   useEffect(() => {
     const fetchData = async () => {
       setBlogs(await getBlogs());
@@ -38,6 +42,7 @@ export default function useMarkdown(): {
     projects,
     getProject: (id) => getProject(id),
     getBlog: (id) => getBlog(id),
+    loadFiles,
   };
 }
 
