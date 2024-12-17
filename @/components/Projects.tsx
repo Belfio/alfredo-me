@@ -15,7 +15,7 @@ export default function Projects({ projects }: { projects: Project[] }) {
   console.log(projectsSorted);
   return (
     <div id="projects" className="my-8 ">
-      <h1>Projects</h1>
+      <h1>New projects</h1>
       {projectsSorted.map((project) => (
         <ArticleLink
           key={project.id}

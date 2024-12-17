@@ -12,7 +12,7 @@ export default $config({
   async run() {
     const site = new sst.aws.Remix("Alfredo-Site", {
       domain:
-        $app.stage === "alfredo"
+        $app.stage === "prod"
           ? {
               name: "albelfio.com",
               dns: sst.cloudflare.dns(),

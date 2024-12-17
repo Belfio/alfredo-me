@@ -5,7 +5,7 @@ export default function Header({ className }: { className?: string }) {
     <header>
       <nav
         className={cn(
-          "m-auto w-[95%] sm:max-w-[1024px] rounded shadow-md bg-white p-4 ",
+          "m-auto w-[95%] sm:max-w-[1024px] rounded  bg-white p-4 ",
           className
         )}
       >
