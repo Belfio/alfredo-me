@@ -46,11 +46,16 @@ async function getBlogs(): Promise<Blog[]> {
     eager: true,
   });
 
-  const fileNames: string[] = Object.values(modules).map(
+  const filesContent: string[] = Object.values(modules).map(
     (module) => module.default
   );
 
-  const files = await parseFiles(fileNames); // Await the promise here
+  const fileNames = Object.keys(modules).map((filePath) => {
+    const parts = filePath.split("/");
+    return parts[parts.length - 1]; // Extracts the file name from the path
+  });
+
+  const files = await parseFiles(filesContent); // Await the promise here
 
   const blogs = await Promise.all(
     files.map(async (file, i) => {
@@ -58,8 +63,7 @@ async function getBlogs(): Promise<Blog[]> {
       return {
         title: name,
         description,
-        // id: fileNames[i].split(".md")[0].replace(/[/@]/g, "_"),
-        id: name.replace(/[^a-zA-Z0-9]/g, "") + i.toString(),
+        id: fileNames[i].split(".md")[0],
         html,
         createdAt,
       };
@@ -75,11 +79,17 @@ async function getProjects(): Promise<Project[]> {
   const modules = import.meta.glob<Module>("@/projects/*.md", {
     eager: true,
   });
-  const fileNames: string[] = Object.values(modules).map(
+
+  const filesContent: string[] = Object.values(modules).map(
     (module) => module.default
   );
 
-  const files = await parseFiles(fileNames); // Await the promise here
+  const fileNames = Object.keys(modules).map((filePath) => {
+    const parts = filePath.split("/");
+    return parts[parts.length - 1]; // Extracts the file name from the path
+  });
+
+  const files = await parseFiles(filesContent); // Await the promise here
   const projects = (
     await Promise.all(
       files.map(async (file, i) => {
@@ -92,8 +102,7 @@ async function getProjects(): Promise<Project[]> {
         return {
           name: name,
           description,
-          // id: fileNames[i].split(".md")[0].replace(/[/@]/g, "_"),
-          id: name.replace(/[^a-zA-Z0-9]/g, "") + i.toString(),
+          id: fileNames[i].split(".md")[0],
           html,
           createdAt,
         };
