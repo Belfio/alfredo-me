@@ -4,16 +4,16 @@
 
 <br>
 
-I just finished reading the _Marginal Revolution_ email, _"Kevin Bryan and Joshua Gans Have a New AI Educational Project"_ ([link](https://marginalrevolution.com/marginalrevolution/2024/12/kevin-bryan-and-joshua-gans-have-a-new-ai-project.html)).
+I just finished reading the Marginal Revolution email, "Kevin Bryan and Joshua Gans Have a New AI Educational Project" ([link](https://marginalrevolution.com/marginalrevolution/2024/12/kevin-bryan-and-joshua-gans-have-a-new-ai-project.html)).
 
 <br>
 
-The interesting sentence is:
+The sentence I found interesting is:
 
 > _"In a perfect world, we want every student to have individual-level assistance, at any time,  
 > in any language, in the format they want (a chatbot TA, a question bank, a sample test grader, etc.)."_
 
-In a perfect world... It reminds me of a talk by **Brian Chesky**, where he describes the _1, 2, 3... 10-star experience_ that a user of Airbnb can have ([link](https://www.youtube.com/watch?v=V6h_EDcj12k)). When I first listened to that talk, I thought: _This is a great framework to think about and design a new product or service._ It aligns with the _Human-Centric Design_ principle and can be executed using the _Double Diamond Design Process_ or the _IDEO Design Thinking Process._ But, at the end of the day, it felt like you would never truly reach the 10th star...
+In a perfect world... It reminds me of a talk by Brian Chesky, where he describes the 1, 2, 3... 10-star experience that a user of Airbnb can have ([link](https://www.youtube.com/watch?v=V6h_EDcj12k)). When I first listened to that talk, I thought: This is a great framework to think about and design a new product or service. It aligns with the _Human-Centric Design_ principle and can be executed using the _Double Diamond Design Process_ or the _IDEO Design Thinking Process._ But, at the end of the day, it felt like you would never truly reach the 10th star...
 
 <br>
 
@@ -42,5 +42,6 @@ Well, now it feels like you can — or at least, AI is helping us move closer to
 ## What’s Holding Back LLM Usage?
 
 I believe it’s this: **there aren’t enough Product Designers developing new products!**
+<br />
 <br />
 2024-12-17
