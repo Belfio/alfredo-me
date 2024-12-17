@@ -29,6 +29,7 @@ export default function useMarkdown(): {
     return project;
   }
   function getBlog(id: string): Blog | undefined {
+    console.log("id", id);
     const blog = blogs.find((blog) => blog.id === id);
     return blog;
   }
@@ -57,12 +58,15 @@ async function getBlogs(): Promise<Blog[]> {
       return {
         title: name,
         description,
-        id: fileNames[i].split(".md")[0].replace(/[/@]/g, "_"),
+        // id: fileNames[i].split(".md")[0].replace(/[/@]/g, "_"),
+        id: name.replace(/[^a-zA-Z0-9]/g, "") + i.toString(),
         html,
         createdAt,
       };
     })
   );
+
+  console.log("blogs", blogs);
 
   return blogs;
 }
@@ -88,7 +92,8 @@ async function getProjects(): Promise<Project[]> {
         return {
           name: name,
           description,
-          id: fileNames[i].split(".md")[0].replace(/[/@]/g, "_"),
+          // id: fileNames[i].split(".md")[0].replace(/[/@]/g, "_"),
+          id: name.replace(/[^a-zA-Z0-9]/g, "") + i.toString(),
           html,
           createdAt,
         };
