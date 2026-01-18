@@ -1,5 +1,10 @@
 {
   "files.exclude": {
     "**/.git": false
+  },
+  "languages": {
+    "Markdown": {
+      "format_on_save": "on"
+    }
   }
 }

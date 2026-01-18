@@ -1,21 +1,39 @@
-import type { MetaFunction } from "@remix-run/node";
-import { isRouteErrorResponse, useRouteError } from "@remix-run/react";
+import { type MetaFunction, json } from "@remix-run/node";
+import { isRouteErrorResponse, useRouteError, useLoaderData } from "@remix-run/react";
 import Header from "@/components/Header";
 import About from "@/components/About";
 import Projects from "@/components/Projects";
 import Blogs from "@/components/Blogs";
 import Contact from "@/components/Contact";
-import useMarkdown from "@/hooks/useMarkdown";
+import { getBlogs, getProjects } from "@/lib/markdown.server";
+
+const BASE_URL = "https://albelfio.com";
+
+export async function loader() {
+  const [blogs, projects] = await Promise.all([getBlogs(), getProjects()]);
+  return json({ blogs, projects });
+}
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "Alfredo's personal website" },
-    { name: "description", content: "Alfredo's personal website" },
+    { title: "Alfredo Belfio | Software Engineer" },
+    { name: "description", content: "Personal website of Alfredo Belfio - Software Engineer, projects, and blog posts about technology and engineering." },
+    // Open Graph
+    { property: "og:title", content: "Alfredo Belfio | Software Engineer" },
+    { property: "og:description", content: "Personal website of Alfredo Belfio - Software Engineer, projects, and blog posts about technology and engineering." },
+    { property: "og:type", content: "website" },
+    { property: "og:url", content: BASE_URL },
+    // Twitter Card
+    { name: "twitter:card", content: "summary" },
+    { name: "twitter:title", content: "Alfredo Belfio | Software Engineer" },
+    { name: "twitter:description", content: "Personal website of Alfredo Belfio - Software Engineer, projects, and blog posts." },
+    // Canonical
+    { tagName: "link", rel: "canonical", href: BASE_URL },
   ];
 };
 
 export default function Index() {
-  const { blogs, projects } = useMarkdown();
+  const { blogs, projects } = useLoaderData<typeof loader>();
   return (
     <div className="">
       <Header className="mt-8" />

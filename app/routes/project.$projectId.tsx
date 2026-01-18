@@ -1,54 +1,51 @@
-import type { MetaFunction } from "@remix-run/node";
-import { isRouteErrorResponse, useRouteError, useParams } from "@remix-run/react";
+import { type MetaFunction, type LoaderFunctionArgs, json } from "@remix-run/node";
+import { isRouteErrorResponse, useRouteError, useLoaderData } from "@remix-run/react";
 import Header from "@/components/Header";
 import Article from "@/components/Article";
-import useMarkdown from "@/hooks/useMarkdown";
-import { Project } from "@/components/Projects";
-import { useState, useEffect } from "react";
+import { getProject } from "@/lib/markdown.server";
 
-export const meta: MetaFunction = () => {
+const BASE_URL = "https://albelfio.com";
+
+export async function loader({ params }: LoaderFunctionArgs) {
+  const project = await getProject(params.projectId || "");
+
+  if (!project) {
+    throw new Response("Project not found", { status: 404 });
+  }
+
+  return json({ project });
+}
+
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  if (!data?.project) {
+    return [
+      { title: "Project Not Found | Alfredo's website" },
+      { name: "description", content: "Project not found" },
+    ];
+  }
+
+  const { project } = data;
+  const url = `${BASE_URL}/project/${project.id}`;
+
   return [
-    { title: "Project | Alfredo's website" },
-    { name: "description", content: "Project on Alfredo's personal website" },
+    { title: `${project.name} | Alfredo's website` },
+    { name: "description", content: project.description },
+    // Open Graph
+    { property: "og:title", content: project.name },
+    { property: "og:description", content: project.description },
+    { property: "og:type", content: "article" },
+    { property: "og:url", content: url },
+    // Twitter Card
+    { name: "twitter:card", content: "summary" },
+    { name: "twitter:title", content: project.name },
+    { name: "twitter:description", content: project.description },
+    // Canonical
+    { tagName: "link", rel: "canonical", href: url },
   ];
 };
 
 export default function ProjectPage() {
-  const [project, setProject] = useState<Project | undefined>(undefined);
-  const [loading, setLoading] = useState(true);
-  const { projectId } = useParams();
-  const { getProject, projects } = useMarkdown();
-
-  useEffect(() => {
-    if (projects.length > 0) {
-      const foundProject = getProject(projectId || "");
-      setProject(foundProject);
-      setLoading(false);
-    }
-  }, [projectId, getProject, projects]);
-
-  if (loading) {
-    return (
-      <div className="">
-        <Header className="mt-8" />
-        <div className="m-auto w-[95%] sm:max-w-[1024px] py-8 px-4">
-          <p>Loading...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!project) {
-    return (
-      <div className="">
-        <Header className="mt-8" />
-        <div className="m-auto w-[95%] sm:max-w-[1024px] py-8 px-4">
-          <h1>Project not found</h1>
-          <p>The project you are looking for does not exist.</p>
-        </div>
-      </div>
-    );
-  }
+  const { project } = useLoaderData<typeof loader>();
 
   return (
     <div className="">
@@ -66,10 +63,8 @@ export function ErrorBoundary() {
       <div>
         <Header className="mt-8" />
         <div className="m-auto w-[95%] sm:max-w-[1024px] py-8 px-4">
-          <h1>
-            {error.status} {error.statusText}
-          </h1>
-          <p>{error.data}</p>
+          <h1>{error.status === 404 ? "Project not found" : `${error.status} ${error.statusText}`}</h1>
+          <p>{error.status === 404 ? "The project you are looking for does not exist." : error.data}</p>
         </div>
       </div>
     );

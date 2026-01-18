@@ -1,54 +1,51 @@
-import { type MetaFunction } from "@remix-run/node";
-import { isRouteErrorResponse, useRouteError, useParams } from "@remix-run/react";
+import { type MetaFunction, type LoaderFunctionArgs, json } from "@remix-run/node";
+import { isRouteErrorResponse, useRouteError, useLoaderData } from "@remix-run/react";
 import Header from "@/components/Header";
 import Article from "@/components/Article";
-import useMarkdown from "@/hooks/useMarkdown";
-import { useEffect, useState } from "react";
-import { Blog } from "@/components/Blogs";
+import { getBlog } from "@/lib/markdown.server";
 
-export const meta: MetaFunction = () => {
+const BASE_URL = "https://albelfio.com";
+
+export async function loader({ params }: LoaderFunctionArgs) {
+  const blog = await getBlog(params.blogId || "");
+
+  if (!blog) {
+    throw new Response("Blog post not found", { status: 404 });
+  }
+
+  return json({ blog });
+}
+
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  if (!data?.blog) {
+    return [
+      { title: "Blog Not Found | Alfredo's website" },
+      { name: "description", content: "Blog post not found" },
+    ];
+  }
+
+  const { blog } = data;
+  const url = `${BASE_URL}/blog/${blog.id}`;
+
   return [
-    { title: "Blog | Alfredo's website" },
-    { name: "description", content: "Blog post on Alfredo's personal website" },
+    { title: `${blog.title} | Alfredo's website` },
+    { name: "description", content: blog.description },
+    // Open Graph
+    { property: "og:title", content: blog.title },
+    { property: "og:description", content: blog.description },
+    { property: "og:type", content: "article" },
+    { property: "og:url", content: url },
+    // Twitter Card
+    { name: "twitter:card", content: "summary" },
+    { name: "twitter:title", content: blog.title },
+    { name: "twitter:description", content: blog.description },
+    // Canonical
+    { tagName: "link", rel: "canonical", href: url },
   ];
 };
 
 export default function BlogPage() {
-  const { blogId } = useParams();
-  const [blog, setBlog] = useState<Blog | undefined>(undefined);
-  const [loading, setLoading] = useState(true);
-  const { getBlog, blogs } = useMarkdown();
-
-  useEffect(() => {
-    if (blogs.length > 0) {
-      const foundBlog = getBlog(blogId || "");
-      setBlog(foundBlog);
-      setLoading(false);
-    }
-  }, [blogId, getBlog, blogs]);
-
-  if (loading) {
-    return (
-      <div className="">
-        <Header className="mt-8" />
-        <div className="m-auto w-[95%] sm:max-w-[1024px] py-8 px-4">
-          <p>Loading...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!blog) {
-    return (
-      <div className="">
-        <Header className="mt-8" />
-        <div className="m-auto w-[95%] sm:max-w-[1024px] py-8 px-4">
-          <h1>Blog post not found</h1>
-          <p>The blog post you are looking for does not exist.</p>
-        </div>
-      </div>
-    );
-  }
+  const { blog } = useLoaderData<typeof loader>();
 
   return (
     <div className="">
@@ -66,10 +63,8 @@ export function ErrorBoundary() {
       <div>
         <Header className="mt-8" />
         <div className="m-auto w-[95%] sm:max-w-[1024px] py-8 px-4">
-          <h1>
-            {error.status} {error.statusText}
-          </h1>
-          <p>{error.data}</p>
+          <h1>{error.status === 404 ? "Blog post not found" : `${error.status} ${error.statusText}`}</h1>
+          <p>{error.status === 404 ? "The blog post you are looking for does not exist." : error.data}</p>
         </div>
       </div>
     );

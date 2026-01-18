@@ -10,6 +10,7 @@ import stylesheet from "./tailwind.css?url";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },
+  { rel: "alternate", type: "application/rss+xml", title: "Alfredo Belfio's Blog RSS Feed", href: "/rss.xml" },
 ];
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
