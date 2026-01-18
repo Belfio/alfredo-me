@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import ArticleLink from "./ArticleLink";
 
 export type Project = {
@@ -9,10 +10,14 @@ export type Project = {
 };
 
 export default function Projects({ projects }: { projects: Project[] }) {
-  const projectsSorted = projects.sort((a, b) => {
-    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-  });
-  console.log(projectsSorted);
+  const projectsSorted = useMemo(
+    () =>
+      [...projects].sort((a, b) => {
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      }),
+    [projects]
+  );
+
   return (
     <div id="projects" className="my-8 ">
       <h1>New projects</h1>

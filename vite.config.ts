@@ -13,14 +13,11 @@ export default defineConfig({
   plugins: [
     remix({
       appDirectory: "app",
-      assetsBuildDirectory: "public/build",
+      buildDirectory: "build",
       future: {
         /* any enabled future flags */
       },
       ignoredRouteFiles: ["**/*.css"],
-      publicPath: "/build/",
-      serverBuildPath: "build/index.js",
-      include: ["**/*.md", "**/*.png"],
     }),
     tsconfigPaths(),
   ],

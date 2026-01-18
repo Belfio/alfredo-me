@@ -6,7 +6,7 @@ export default $config({
       name: "alfredo",
       removal: input?.stage === "production" ? "retain" : "remove",
       home: "aws",
-      providers: { aws: "6.50.1" },
+      providers: { aws: "6.66.2" },
     };
   },
   async run() {

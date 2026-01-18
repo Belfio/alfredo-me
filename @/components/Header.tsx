@@ -13,8 +13,7 @@ export default function Header({ className }: { className?: string }) {
           <li>
             <a
               href="/#home"
-              rel="noreferrer"
-              className="text-gray-900 visited:text-gray-900 hover:text-blue-800"
+                            className="text-gray-900 visited:text-gray-900 hover:text-blue-800"
             >
               Home
             </a>
@@ -22,8 +21,7 @@ export default function Header({ className }: { className?: string }) {
           <li>
             <a
               href="/#projects"
-              rel="noreferrer"
-              className="text-gray-900 visited:text-gray-900 hover:text-blue-800"
+                            className="text-gray-900 visited:text-gray-900 hover:text-blue-800"
             >
               Projects
             </a>
@@ -31,8 +29,7 @@ export default function Header({ className }: { className?: string }) {
           <li>
             <a
               href="/#blog"
-              rel="noreferrer"
-              className="text-gray-900 visited:text-gray-900 hover:text-blue-800"
+                            className="text-gray-900 visited:text-gray-900 hover:text-blue-800"
             >
               Blog
             </a>
@@ -40,8 +37,7 @@ export default function Header({ className }: { className?: string }) {
           <li>
             <a
               href="/#contact"
-              rel="noreferrer"
-              className="text-gray-900 visited:text-gray-900 hover:text-blue-800"
+                            className="text-gray-900 visited:text-gray-900 hover:text-blue-800"
             >
               Contact
             </a>

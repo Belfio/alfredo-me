@@ -28,20 +28,25 @@ export default function useMarkdown(): {
     fetchData();
   }, []);
 
-  function getProject(id: string): Project | undefined {
-    const project = projects.find((project) => project.id === id);
-    return project;
-  }
-  function getBlog(id: string): Blog | undefined {
-    console.log("id", id);
-    const blog = blogs.find((blog) => blog.id === id);
-    return blog;
-  }
+  const getProject = useCallback(
+    (id: string): Project | undefined => {
+      return projects.find((project) => project.id === id);
+    },
+    [projects]
+  );
+
+  const getBlog = useCallback(
+    (id: string): Blog | undefined => {
+      return blogs.find((blog) => blog.id === id);
+    },
+    [blogs]
+  );
+
   return {
     blogs,
     projects,
-    getProject: (id) => getProject(id),
-    getBlog: (id) => getBlog(id),
+    getProject,
+    getBlog,
     loadFiles,
   };
 }
@@ -74,8 +79,6 @@ async function getBlogs(): Promise<Blog[]> {
       };
     })
   );
-
-  console.log("blogs", blogs);
 
   return blogs;
 }
@@ -124,8 +127,7 @@ async function parseFiles(fileNames: string[]): Promise<string[]> {
     fileNames.map(async (file: string) => {
       return fetch(file)
         .then((res) => res.text())
-        .catch((err) => {
-          console.log("err", err);
+        .catch(() => {
           return "";
         });
     })
@@ -148,7 +150,6 @@ async function parseMarkdown(content: string): Promise<{
     const createdAt = getDateFromContent(content);
     return { html, name, description, createdAt };
   } catch {
-    console.log("error", name);
     return { html: "", name: "", description: "", createdAt: "" };
   }
 }

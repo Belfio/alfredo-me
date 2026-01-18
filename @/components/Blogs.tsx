@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import ArticleLink from "./ArticleLink";
 
 export type Blog = {
@@ -9,9 +10,14 @@ export type Blog = {
 };
 
 export default function Blogs({ blogs }: { blogs: Blog[] }) {
-  const blogsSorted = blogs.sort((a, b) => {
-    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-  });
+  const blogsSorted = useMemo(
+    () =>
+      [...blogs].sort((a, b) => {
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      }),
+    [blogs]
+  );
+
   return (
     <div id="blog" className="my-8">
       <h1>Blog</h1>
