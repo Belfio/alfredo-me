@@ -18,6 +18,16 @@ export default $config({
               dns: sst.cloudflare.dns(),
             }
           : undefined,
+      transform: {
+        server: {
+          // markdown.server.ts reads blog/project .md files from disk at
+          // runtime, so they must ship inside the Lambda bundle
+          copyFiles: [
+            { from: "@/blogs", to: "@/blogs" },
+            { from: "@/projects", to: "@/projects" },
+          ],
+        },
+      },
     });
     return {
       url: site.url,

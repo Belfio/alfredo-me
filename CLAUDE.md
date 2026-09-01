@@ -58,7 +58,15 @@ npx sst deploy --stage prod     # production (albelfio.com)
 
 ### Infrastructure (SST)
 - Deploys as Remix site to AWS
-- Production uses Cloudflare DNS for albelfio.com
+- Production uses Cloudflare DNS for albelfio.com (deploy needs `CLOUDFLARE_API_TOKEN`)
 - Stage-based deployment: `prod` for production, others for dev/staging
+
+### Deployment gotchas
+- `@/blogs` and `@/projects` are read from disk at runtime, so they are shipped
+  into the Lambda via `copyFiles` in sst.config.ts — don't remove that block
+- Since Oct 2025 AWS requires a second resource-policy statement on public
+  Lambda function URLs. The pinned pulumi-aws provider only creates the first,
+  so after a deploy that creates a new server function, the site 403s until:
+  `aws lambda add-permission --function-name <server-fn> --statement-id FunctionURLInvokeAllowPublicAccess --action lambda:InvokeFunction --principal '*' --invoked-via-function-url`
 <br />
 2026-01-18
