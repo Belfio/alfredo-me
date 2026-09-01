@@ -6,6 +6,9 @@ node_modules
 /static
 .env
 
+# vite ephemeral config bundles
+vite.config.ts.timestamp-*
+
 # sst
 .sst
 sst-env.ts
