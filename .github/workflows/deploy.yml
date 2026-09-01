@@ -32,6 +32,9 @@ jobs:
       - name: Type check
         run: npm run typecheck
 
+      - name: Remove preinstalled Pulumi (conflicts with SST's bundled version)
+        run: sudo rm -f /usr/local/bin/pulumi /usr/local/bin/pulumi-language-nodejs /usr/local/bin/pulumi-*
+
       - name: Deploy to production
         run: npx sst deploy --stage prod
         env:
