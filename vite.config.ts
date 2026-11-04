@@ -19,7 +19,7 @@ export default defineConfig({
       },
       ignoredRouteFiles: ["**/*.css"],
     }),
-    tsconfigPaths(),
+    tsconfigPaths({ projects: ["./tsconfig.json"] }),
   ],
   assetsInclude: ["**/*.md", "**/*.png"],
   resolve: {
