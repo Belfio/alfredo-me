@@ -12,11 +12,11 @@ export default function About() {
           </p>
           <p className="pt-2">
             My previous projects include:{" "}
-            <a href="https://www.flicktek.com/">Pegasus</a> - sensorised sportswear,{" "}
-            <a href="https://www.flicktek.com/">Flicktek</a> - a sensor for
-            gesture recognition,{" "}
             <a href="https://www.betterspace.uk/">Betterspace</a> - an employee
             benefit platform used by Accenture and other enterprises,{" "}
+            <a href="https://www.flicktek.com/">Flicktek</a> - a sensor for
+            gesture recognition,{" "}
+            <a href="https://www.flicktek.com/">Pegasus</a> - sensorised sportswear,{" "}
             <a href="https://www.joinlima.com/">Lima</a> - an AI community
             manager, <a href="https://razionalista.it/">Razionalista.it</a> - an
             online magazine for Italian rationalists.

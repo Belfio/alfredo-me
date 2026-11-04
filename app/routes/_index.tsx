@@ -39,8 +39,8 @@ export default function Index() {
       <Header className="mt-8" />
       <div className="m-auto w-[95%] sm:max-w-[1024px] py-8 px-4">
         <About />
-        <Projects projects={projects} />
         <Blogs blogs={blogs} />
+        <Projects projects={projects} />
         <Contact />
       </div>
     </div>

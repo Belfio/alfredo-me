@@ -20,18 +20,18 @@ export default function Header({ className }: { className?: string }) {
           </li>
           <li>
             <a
-              href="/#projects"
-                            className="text-gray-900 visited:text-gray-900 hover:text-blue-800"
-            >
-              Projects
-            </a>
-          </li>
-          <li>
-            <a
               href="/#blog"
                             className="text-gray-900 visited:text-gray-900 hover:text-blue-800"
             >
               Blog
+            </a>
+          </li>
+          <li>
+            <a
+              href="/#projects"
+                            className="text-gray-900 visited:text-gray-900 hover:text-blue-800"
+            >
+              Projects
             </a>
           </li>
           <li>
