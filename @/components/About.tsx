@@ -8,7 +8,8 @@ export default function About() {
         </div>
         <div>
           <p id="about" className="pt-8">
-            Hey this is Alfredo, I am a Biomedical and Software Engineer, I work in tech.
+            Hey this is Alfredo, I am a Biomedical and Software Engineer, currently
+            working as CTO of <a href="https://gotobeat.com/tech">Gotobeat</a>.
           </p>
           <p className="pt-2">
             My previous projects include:{" "}
