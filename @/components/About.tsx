@@ -10,20 +10,18 @@ export default function About() {
           <p id="about" className="pt-8">
             Hey this is Alfredo, I am a Biomedical and Software Engineer (
             <a href="https://www.polimi.it/">Politecnico di Milano</a>,{" "}
-            <a href="https://www.imperial.ac.uk/">Imperial College London</a>),
-            currently working as CTO of{" "}
-            <a href="https://gotobeat.com/tech">Gotobeat</a>.
+            <a href="https://www.imperial.ac.uk/">Imperial College London</a>)
+            and CTO of <a href="https://gotobeat.com/tech">Gotobeat</a>.
           </p>
           <p className="pt-2">
             My previous projects include:{" "}
-            <a href="https://www.betterspace.uk/">Betterspace</a> - an employee
-            benefit platform used by Accenture and other enterprises,{" "}
-            <a href="https://www.flicktek.com/">Flicktek</a> - a sensor for
+            <a href="https://www.betterspace.uk/">Betterspace</a> (exited) - an
+            employee benefit platform used by Accenture and other enterprises,
+            and <a href="https://www.flicktek.com/">Flicktek</a> - a sensor for
             gesture recognition (patents{" "}
             <a href="https://patents.google.com/patent/WO2015033327A1/en">1</a>,
             <a href="https://patents.google.com/patent/US11281301B2/en">2</a>
-            ), and <a href="https://www.joinlima.com/">Lima</a> - an AI
-            community manager.
+            ).
           </p>
           <p className="pt-2">
             Talk to me about music (
