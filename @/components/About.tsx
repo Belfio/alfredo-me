@@ -8,8 +8,11 @@ export default function About() {
         </div>
         <div>
           <p id="about" className="pt-8">
-            Hey this is Alfredo, I am a Biomedical and Software Engineer, currently
-            working as CTO of <a href="https://gotobeat.com/tech">Gotobeat</a>.
+            Hey this is Alfredo, I am a Biomedical and Software Engineer (
+            <a href="https://www.polimi.it/">Politecnico di Milano</a>,{" "}
+            <a href="https://www.imperial.ac.uk/">Imperial College London</a>),
+            currently working as CTO of{" "}
+            <a href="https://gotobeat.com/tech">Gotobeat</a>.
           </p>
           <p className="pt-2">
             My previous projects include:{" "}
@@ -19,11 +22,8 @@ export default function About() {
             gesture recognition (patents{" "}
             <a href="https://patents.google.com/patent/WO2015033327A1/en">1</a>,
             <a href="https://patents.google.com/patent/US11281301B2/en">2</a>
-            ),{" "}
-            <a href="https://www.flicktek.com/">Pegasus</a> - sensorised sportswear,{" "}
-            <a href="https://www.joinlima.com/">Lima</a> - an AI community
-            manager, <a href="https://razionalista.it/">Razionalista.it</a> - an
-            online magazine for Italian rationalists.
+            ), and <a href="https://www.joinlima.com/">Lima</a> - an AI
+            community manager.
           </p>
           <p className="pt-2">
             Talk to me about music (
