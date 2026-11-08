@@ -11,7 +11,8 @@ export default function About() {
             Hey this is Alfredo, I am a Biomedical and Software Engineer (
             <a href="https://www.polimi.it/">Politecnico di Milano</a>,{" "}
             <a href="https://www.imperial.ac.uk/">Imperial College London</a>)
-            and CTO of <a href="https://gotobeat.com/tech">Gotobeat</a>.
+            and CTO of <a href="https://gotobeat.com/tech">Gotobeat</a>, the
+            AI-powered live music operator.
           </p>
           <p className="pt-2">
             My previous projects include:{" "}
