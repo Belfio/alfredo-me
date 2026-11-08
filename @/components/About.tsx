@@ -16,7 +16,10 @@ export default function About() {
             <a href="https://www.betterspace.uk/">Betterspace</a> - an employee
             benefit platform used by Accenture and other enterprises,{" "}
             <a href="https://www.flicktek.com/">Flicktek</a> - a sensor for
-            gesture recognition,{" "}
+            gesture recognition (patents{" "}
+            <a href="https://patents.google.com/patent/WO2015033327A1/en">1</a>,
+            <a href="https://patents.google.com/patent/US11281301B2/en">2</a>
+            ),{" "}
             <a href="https://www.flicktek.com/">Pegasus</a> - sensorised sportswear,{" "}
             <a href="https://www.joinlima.com/">Lima</a> - an AI community
             manager, <a href="https://razionalista.it/">Razionalista.it</a> - an
