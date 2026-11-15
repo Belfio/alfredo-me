@@ -139,8 +139,9 @@ export const BIO_STOPS: BioStop[] = [
         lineId: "activities",
         segments: [
           { text: "Zinc", href: "https://www.zinc.vc/" },
-          " & ",
+          " — founded ",
           { text: "Betterspace", href: "https://www.betterspace.uk/" },
+          ", a platform to help and support people's mental health",
         ],
       },
     ],
