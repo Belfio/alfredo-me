@@ -23,39 +23,39 @@ const LINE_INDEX: Record<LineId, number> = {
 };
 
 // Desktop rail X offsets (px from left edge of each column)
-// Slightly wider spacing so hand-drawn wobble never collides cleanly
+// Generous spacing so visibly freehand fountain-pen wobble breathes naturally
 const DESKTOP_RAILS = {
   activities: {
-    gutterWidth: 28,
-    paddingLeft: 30,
-    coords: { "act-1": 9 } as Record<string, number>,
+    gutterWidth: 32,
+    paddingLeft: 34,
+    coords: { "act-1": 11 } as Record<string, number>,
   },
   places: {
-    gutterWidth: 42,
-    paddingLeft: 44,
-    coords: { "place-1": 9, "place-2": 24 } as Record<string, number>,
+    gutterWidth: 52,
+    paddingLeft: 54,
+    coords: { "place-1": 11, "place-2": 31 } as Record<string, number>,
   },
   people: {
-    gutterWidth: 56,
-    paddingLeft: 58,
+    gutterWidth: 72,
+    paddingLeft: 74,
     coords: {
-      "people-1": 9,
-      "people-2": 24,
-      "people-3": 39,
+      "people-1": 11,
+      "people-2": 31,
+      "people-3": 51,
     } as Record<string, number>,
   },
 };
 
 // Mobile 6-line hand-drawn stave in left gutter
-const MOBILE_GUTTER_WIDTH = 68;
-const MOBILE_PADDING_LEFT = 72;
+const MOBILE_GUTTER_WIDTH = 74;
+const MOBILE_PADDING_LEFT = 78;
 const MOBILE_RAIL_X: Record<LineId, number> = {
   "act-1": 7,
   "place-1": 19,
-  "place-2": 28,
-  "people-1": 40,
-  "people-2": 49,
-  "people-3": 58,
+  "place-2": 30,
+  "people-1": 42,
+  "people-2": 53,
+  "people-3": 64,
 };
 
 // Deterministic rounded pseudo-random in [-1, 1] (SSR-safe, zero hydration drift)
@@ -74,7 +74,7 @@ function railBoundaryX(
   lineId: LineId,
   boundaryIdx: number,
   baseX: number,
-  amp = 2.4
+  amp = 3.8
 ): number {
   const li = LINE_INDEX[lineId] + 1;
   return baseX + jitter(li * 97 + boundaryIdx * 31) * amp;
@@ -82,61 +82,66 @@ function railBoundaryX(
 
 function railBoundarySlope(lineId: LineId, boundaryIdx: number): number {
   const li = LINE_INDEX[lineId] + 1;
-  return jitter(li * 193 + boundaryIdx * 53 + 17) * 0.075;
+  return jitter(li * 193 + boundaryIdx * 53 + 17) * 0.14;
 }
 
-// Generates multi-point fountain-pen stroke + secondary fine re-stroke in 0..100 Y space
+// Generates multi-point freehand pen stroke + rough second sketch pass in 0..100 Y space
 function buildSketchSegment(
   lineId: LineId,
   rowIdx: number,
   baseX: number,
-  amp = 2.4
+  amp = 3.8
 ): { main: string; whisper: string; nodeXFirst: string; nodeXLater: string } {
   const li = LINE_INDEX[lineId] + 1;
   const x0 = railBoundaryX(lineId, rowIdx, baseX, amp);
-  const x4 = railBoundaryX(lineId, rowIdx + 1, baseX, amp);
+  const x5 = railBoundaryX(lineId, rowIdx + 1, baseX, amp);
   const s0 = railBoundarySlope(lineId, rowIdx);
-  const s4 = railBoundarySlope(lineId, rowIdx + 1);
+  const s5 = railBoundarySlope(lineId, rowIdx + 1);
 
-  // Three interior hand-tremor waypoints so even tall rows look genuinely freehand
-  const y1 = 24 + jitter(li * 31 + rowIdx * 59) * 3.5;
-  const y2 = 50 + jitter(li * 41 + rowIdx * 71) * 4.5;
-  const y3 = 76 + jitter(li * 53 + rowIdx * 83) * 3.5;
+  // Four interior hand-tremor waypoints so every row reads unmistakably freehand
+  const y1 = 19 + jitter(li * 31 + rowIdx * 59) * 3.2;
+  const y2 = 39 + jitter(li * 37 + rowIdx * 67) * 3.8;
+  const y3 = 61 + jitter(li * 41 + rowIdx * 71) * 3.8;
+  const y4 = 81 + jitter(li * 53 + rowIdx * 83) * 3.2;
 
-  const x1 = baseX + jitter(li * 61 + rowIdx * 97 + 2) * (amp * 1.15);
-  const x2 = baseX + jitter(li * 67 + rowIdx * 89 + 5) * (amp * 1.25);
-  const x3 = baseX + jitter(li * 73 + rowIdx * 101 + 8) * (amp * 1.15);
+  const x1 = baseX + jitter(li * 61 + rowIdx * 97 + 2) * (amp * 1.18);
+  const x2 = baseX + jitter(li * 67 + rowIdx * 89 + 5) * (amp * 1.28);
+  const x3 = baseX + jitter(li * 73 + rowIdx * 101 + 8) * (amp * 1.24);
+  const x4 = baseX + jitter(li * 79 + rowIdx * 107 + 11) * (amp * 1.15);
 
-  const s1 = jitter(li * 109 + rowIdx * 43 + 3) * 0.09;
-  const s2 = jitter(li * 131 + rowIdx * 37 + 9) * 0.095;
-  const s3 = jitter(li * 139 + rowIdx * 47 + 14) * 0.09;
+  const s1 = jitter(li * 109 + rowIdx * 43 + 3) * 0.15;
+  const s2 = jitter(li * 127 + rowIdx * 39 + 6) * 0.16;
+  const s3 = jitter(li * 131 + rowIdx * 37 + 9) * 0.16;
+  const s4 = jitter(li * 139 + rowIdx * 47 + 14) * 0.15;
 
   const main = [
     `M ${f(x0)} 0`,
-    `C ${f(x0 + s0 * 8)} ${f(y1 * 0.36)}, ${f(x1 - s1 * 8)} ${f(y1 * 0.68)}, ${f(x1)} ${f(y1)}`,
-    `C ${f(x1 + s1 * 8)} ${f(y1 + (y2 - y1) * 0.36)}, ${f(x2 - s2 * 8)} ${f(y1 + (y2 - y1) * 0.68)}, ${f(x2)} ${f(y2)}`,
-    `C ${f(x2 + s2 * 8)} ${f(y2 + (y3 - y2) * 0.36)}, ${f(x3 - s3 * 8)} ${f(y2 + (y3 - y2) * 0.68)}, ${f(x3)} ${f(y3)}`,
-    `C ${f(x3 + s3 * 8)} ${f(y3 + (100 - y3) * 0.36)}, ${f(x4 - s4 * 8)} ${f(y3 + (100 - y3) * 0.68)}, ${f(x4)} 100`,
+    `C ${f(x0 + s0 * 7)} ${f(y1 * 0.36)}, ${f(x1 - s1 * 7)} ${f(y1 * 0.68)}, ${f(x1)} ${f(y1)}`,
+    `C ${f(x1 + s1 * 7)} ${f(y1 + (y2 - y1) * 0.36)}, ${f(x2 - s2 * 7)} ${f(y1 + (y2 - y1) * 0.68)}, ${f(x2)} ${f(y2)}`,
+    `C ${f(x2 + s2 * 7)} ${f(y2 + (y3 - y2) * 0.36)}, ${f(x3 - s3 * 7)} ${f(y2 + (y3 - y2) * 0.68)}, ${f(x3)} ${f(y3)}`,
+    `C ${f(x3 + s3 * 7)} ${f(y3 + (y4 - y3) * 0.36)}, ${f(x4 - s4 * 7)} ${f(y3 + (y4 - y3) * 0.68)}, ${f(x4)} ${f(y4)}`,
+    `C ${f(x4 + s4 * 7)} ${f(y4 + (100 - y4) * 0.36)}, ${f(x5 - s5 * 7)} ${f(y4 + (100 - y4) * 0.68)}, ${f(x5)} 100`,
   ].join(" ");
 
-  // Subtle second nib pass weaving ~1px beside the primary stroke
-  const d0 = jitter(li * 149 + rowIdx * 23) * 1.05;
-  const d1 = jitter(li * 151 + rowIdx * 27 + 1) * 1.25;
-  const d2 = jitter(li * 157 + rowIdx * 29 + 3) * 1.3;
-  const d3 = jitter(li * 163 + rowIdx * 31 + 6) * 1.25;
-  const d4 = jitter(li * 149 + (rowIdx + 1) * 23) * 1.05;
+  // Second sketchy pen pass weaving across and beside the primary stroke
+  const d0 = jitter(li * 149 + rowIdx * 23) * 1.85;
+  const d1 = jitter(li * 151 + rowIdx * 27 + 1) * 2.15;
+  const d2 = jitter(li * 157 + rowIdx * 29 + 3) * -2.05;
+  const d3 = jitter(li * 163 + rowIdx * 31 + 6) * 2.1;
+  const d4 = jitter(li * 167 + rowIdx * 35 + 9) * -1.9;
+  const d5 = jitter(li * 149 + (rowIdx + 1) * 23) * 1.85;
 
   const whisper = [
     `M ${f(x0 + d0)} 0`,
-    `C ${f(x0 + d0 + s0 * 7)} ${f(y1 * 0.38)}, ${f(x1 + d1 - s1 * 7)} ${f(y1 * 0.66)}, ${f(x1 + d1)} ${f(y1)}`,
-    `C ${f(x1 + d1 + s1 * 7)} ${f(y1 + (y2 - y1) * 0.38)}, ${f(x2 + d2 - s2 * 7)} ${f(y1 + (y2 - y1) * 0.66)}, ${f(x2 + d2)} ${f(y2)}`,
-    `C ${f(x2 + d2 + s2 * 7)} ${f(y2 + (y3 - y2) * 0.38)}, ${f(x3 + d3 - s3 * 7)} ${f(y2 + (y3 - y2) * 0.66)}, ${f(x3 + d3)} ${f(y3)}`,
-    `C ${f(x3 + d3 + s3 * 7)} ${f(y3 + (100 - y3) * 0.38)}, ${f(x4 + d4 - s4 * 7)} ${f(y3 + (100 - y3) * 0.66)}, ${f(x4 + d4)} 100`,
+    `C ${f(x0 + d0 + s0 * 6)} ${f(y1 * 0.38)}, ${f(x1 + d1 - s1 * 6)} ${f(y1 * 0.66)}, ${f(x1 + d1)} ${f(y1)}`,
+    `C ${f(x1 + d1 + s1 * 6)} ${f(y1 + (y2 - y1) * 0.38)}, ${f(x2 + d2 - s2 * 6)} ${f(y1 + (y2 - y1) * 0.66)}, ${f(x2 + d2)} ${f(y2)}`,
+    `C ${f(x2 + d2 + s2 * 6)} ${f(y2 + (y3 - y2) * 0.38)}, ${f(x3 + d3 - s3 * 6)} ${f(y2 + (y3 - y2) * 0.66)}, ${f(x3 + d3)} ${f(y3)}`,
+    `C ${f(x3 + d3 + s3 * 6)} ${f(y3 + (y4 - y3) * 0.38)}, ${f(x4 + d4 - s4 * 6)} ${f(y3 + (y4 - y3) * 0.66)}, ${f(x4 + d4)} ${f(y4)}`,
+    `C ${f(x4 + d4 + s4 * 6)} ${f(y4 + (100 - y4) * 0.38)}, ${f(x5 + d5 - s5 * 6)} ${f(y4 + (100 - y4) * 0.66)}, ${f(x5 + d5)} 100`,
   ].join(" ");
 
-  // Approximate X near top of cell (entry 0, ~y=16) and middle of cell (entry 1+, ~y=58)
-  const nodeX0 = x0 * 0.35 + x1 * 0.65;
-  const nodeX1 = x2 * 0.65 + x3 * 0.35;
+  const nodeX0 = x0 * 0.25 + x1 * 0.75;
+  const nodeX1 = x2 * 0.4 + x3 * 0.6;
 
   return {
     main,
@@ -156,39 +161,38 @@ function HandRule({
   className?: string;
   subtle?: boolean;
 }) {
-  const y0 = 3 + jitter(seed * 13) * 0.9;
-  const y1 = 3 + jitter(seed * 29 + 4) * 1.2;
-  const y2 = 3 + jitter(seed * 47 + 9) * 1.1;
-  const y3 = 3 + jitter(seed * 61 + 2) * 0.9;
-  const d = `M 0 ${f(y0)} C 240 ${f(y1)}, 520 ${f(y2)}, 780 ${f(y1)} S 940 ${f(y3)}, 1000 ${f(y2)}`;
-  const d2 = `M 4 ${f(y0 + 0.7)} C 310 ${f(y2 + 0.5)}, 670 ${f(y1 - 0.5)}, 996 ${f(y3 + 0.4)}`;
+  const y0 = 5 + jitter(seed * 13) * 1.9;
+  const y1 = 5 + jitter(seed * 29 + 4) * 2.5;
+  const y2 = 5 + jitter(seed * 47 + 9) * -2.3;
+  const y3 = 5 + jitter(seed * 61 + 2) * 2.2;
+  const y4 = 5 + jitter(seed * 73 + 6) * -1.8;
+  const d = `M 0 ${f(y0)} C 190 ${f(y1)}, 390 ${f(y2)}, 590 ${f(y3)} S 830 ${f(y4)}, 1000 ${f(y1)}`;
+  const d2 = `M 6 ${f(y0 + 1.1)} C 280 ${f(y2 + 0.9)}, 640 ${f(y1 - 1.1)}, 994 ${f(y3 + 0.7)}`;
 
   return (
     <svg
       aria-hidden="true"
-      viewBox="0 0 1000 6"
+      viewBox="0 0 1000 10"
       preserveAspectRatio="none"
-      className={cn("pointer-events-none block h-[6px] w-full overflow-visible", className)}
+      className={cn("pointer-events-none block h-[9px] w-full overflow-visible", className)}
     >
       <path
         d={d}
         fill="none"
-        stroke={subtle ? "#e7e5e4" : "#d6d3d1"}
-        strokeWidth={subtle ? "1" : "1.25"}
+        stroke={subtle ? "#dfd9d2" : "#c7c2bc"}
+        strokeWidth={subtle ? "1.15" : "1.45"}
         strokeLinecap="round"
         vectorEffect="non-scaling-stroke"
       />
-      {!subtle && (
-        <path
-          d={d2}
-          fill="none"
-          stroke="#a8a29e"
-          strokeOpacity="0.35"
-          strokeWidth="0.7"
-          strokeLinecap="round"
-          vectorEffect="non-scaling-stroke"
-        />
-      )}
+      <path
+        d={d2}
+        fill="none"
+        stroke={subtle ? "#e7e2dc" : "#a8a29e"}
+        strokeOpacity={subtle ? "0.55" : "0.45"}
+        strokeWidth="0.75"
+        strokeLinecap="round"
+        vectorEffect="non-scaling-stroke"
+      />
     </svg>
   );
 }
@@ -201,7 +205,7 @@ function ColumnRailsSvg({
   rowIdx,
   activeLinesInChapter,
   isRailHighlighted,
-  amp = 2.4,
+  amp = 3.8,
 }: {
   lineIds: LineId[];
   coords: Record<string, number>;
@@ -225,15 +229,15 @@ function ColumnRailsSvg({
         const color = LINE_MAP[id].color;
 
         if (!active) {
-          // Light pencil-sketch guideline when a track hasn't started yet or is filtered out
+          // Uneven hand-dashed pencil guideline when a track hasn't started yet or is filtered
           return (
             <path
               key={id}
               d={seg.main}
               fill="none"
               stroke="#d6d3d1"
-              strokeWidth="1.05"
-              strokeDasharray="3 4.5"
+              strokeWidth="1.15"
+              strokeDasharray="4 5 2 6"
               strokeLinecap="round"
               vectorEffect="non-scaling-stroke"
             />
@@ -247,7 +251,7 @@ function ColumnRailsSvg({
               fill="none"
               stroke={color}
               strokeOpacity="0.9"
-              strokeWidth="1.95"
+              strokeWidth="2.05"
               strokeLinecap="round"
               strokeLinejoin="round"
               vectorEffect="non-scaling-stroke"
@@ -256,8 +260,8 @@ function ColumnRailsSvg({
               d={seg.whisper}
               fill="none"
               stroke={color}
-              strokeOpacity="0.32"
-              strokeWidth="0.85"
+              strokeOpacity="0.46"
+              strokeWidth="0.95"
               strokeLinecap="round"
               vectorEffect="non-scaling-stroke"
             />
@@ -273,7 +277,7 @@ function HeaderRailsSvg({
   lineIds,
   coords,
   gutterWidth,
-  amp = 2.4,
+  amp = 3.8,
 }: {
   lineIds: LineId[];
   coords: Record<string, number>;
@@ -291,8 +295,8 @@ function HeaderRailsSvg({
       {lineIds.map((id) => {
         const li = LINE_INDEX[id] + 1;
         const xEnd = railBoundaryX(id, 0, coords[id], amp);
-        const xStart = coords[id] + jitter(li * 43 + 7) * 1.4;
-        const xCtrl = (xStart + xEnd) / 2 + jitter(li * 79 + 3) * 1.5;
+        const xStart = coords[id] + jitter(li * 43 + 7) * 2.1;
+        const xCtrl = (xStart + xEnd) / 2 + jitter(li * 79 + 3) * 2.6;
         const color = LINE_MAP[id].color;
         return (
           <g key={id}>
@@ -300,12 +304,20 @@ function HeaderRailsSvg({
               d={`M ${f(xStart)} 4 Q ${f(xCtrl)} 24 ${f(xEnd)} 44`}
               fill="none"
               stroke={color}
-              strokeWidth="1.9"
+              strokeWidth="2.0"
               strokeLinecap="round"
               vectorEffect="non-scaling-stroke"
             />
-            {/* Tiny ink nib dot at the very top of each stave line */}
-            <circle cx={f(xStart)} cy="4" r="2.1" fill={color} />
+            <path
+              d={`M ${f(xStart + 1.1)} 5 Q ${f(xCtrl - 1.3)} 25 ${f(xEnd + 0.9)} 44`}
+              fill="none"
+              stroke={color}
+              strokeOpacity="0.42"
+              strokeWidth="0.9"
+              strokeLinecap="round"
+              vectorEffect="non-scaling-stroke"
+            />
+            <circle cx={f(xStart)} cy="4" r="2.2" fill={color} />
           </g>
         );
       })}
@@ -319,7 +331,7 @@ function TerminalRailsSvg({
   coords,
   gutterWidth,
   finalBoundaryIdx,
-  amp = 2.4,
+  amp = 3.8,
 }: {
   lineIds: LineId[];
   coords: Record<string, number>;
@@ -337,23 +349,31 @@ function TerminalRailsSvg({
       {lineIds.map((id) => {
         const li = LINE_INDEX[id] + 1;
         const x0 = railBoundaryX(id, finalBoundaryIdx, coords[id], amp);
-        const xTip = x0 + jitter(li * 59 + 11) * 1.1;
+        const xTip = x0 + jitter(li * 59 + 11) * 2.1;
         const color = LINE_MAP[id].color;
         return (
           <g key={id}>
             <path
-              d={`M ${f(x0)} 0 Q ${f(x0 + 0.6)} 8 ${f(xTip)} 15`}
+              d={`M ${f(x0)} 0 Q ${f(x0 + jitter(li * 23) * 1.8)} 8 ${f(xTip)} 16`}
               fill="none"
               stroke={color}
-              strokeWidth="1.8"
+              strokeWidth="1.95"
               strokeLinecap="round"
             />
-            {/* Hand-sketched small V arrowhead */}
             <path
-              d={`M ${f(xTip - 3.3)} 10.8 L ${f(xTip)} 16.2 L ${f(xTip + 3.4)} 10.5`}
+              d={`M ${f(x0 + 1.1)} 0.5 Q ${f(x0 - 1.2)} 8.5 ${f(xTip + 0.7)} 15.8`}
               fill="none"
               stroke={color}
-              strokeWidth="1.6"
+              strokeOpacity="0.4"
+              strokeWidth="0.85"
+              strokeLinecap="round"
+            />
+            {/* Hand-sketched uneven V arrowhead */}
+            <path
+              d={`M ${f(xTip - 3.9)} 10.6 Q ${f(xTip - 1.6)} 13.8 ${f(xTip)} 17.0 Q ${f(xTip + 1.9)} 13.4 ${f(xTip + 3.8)} 10.1`}
+              fill="none"
+              stroke={color}
+              strokeWidth="1.75"
               strokeLinecap="round"
               strokeLinejoin="round"
             />
@@ -415,31 +435,39 @@ function EntryBlock({
           height: "18px",
         }}
       >
-        {/* Curved fountain-pen connector tick */}
+        {/* Double-pass freehand fountain-pen connector tick */}
         <path
-          d={`M 3.6 9.2 Q ${f(tickWidthPx * 0.52)} ${f(archY)} ${f(tickWidthPx)} 9.4`}
+          d={`M 4.0 9.2 C ${f(tickWidthPx * 0.33)} ${f(archY)}, ${f(tickWidthPx * 0.72)} ${f(18 - archY)}, ${f(tickWidthPx)} 9.5`}
           fill="none"
           stroke={line.color}
-          strokeOpacity="0.62"
-          strokeWidth="1.3"
+          strokeOpacity="0.72"
+          strokeWidth="1.45"
+          strokeLinecap="round"
+        />
+        <path
+          d={`M 4.4 9.9 Q ${f(tickWidthPx * 0.54)} ${f(archY + 1.2)} ${f(tickWidthPx - 0.6)} 8.9`}
+          fill="none"
+          stroke={line.color}
+          strokeOpacity="0.32"
+          strokeWidth="0.8"
           strokeLinecap="round"
         />
         {/* Tiny nib stop dot at entry end */}
         <circle
           cx={f(tickWidthPx)}
-          cy="9.4"
-          r="1.2"
+          cy="9.5"
+          r="1.35"
           fill={line.color}
-          fillOpacity="0.55"
+          fillOpacity="0.65"
         />
-        {/* Hand-drawn overdrawn 1.2-turn ink loop node */}
+        {/* Hand-drawn overdrawn 1.4-turn sketchy ink loop node */}
         <g transform={`translate(0, 9.2) rotate(${rotDeg})`}>
-          <circle cx="0" cy="0" r="3.6" fill="#ffffff" />
+          <circle cx="0" cy="0" r="4.1" fill="#ffffff" />
           <path
-            d="M -3.5 -1.1 C -3.8 -4.1 0.8 -4.6 3.4 -2.3 C 4.7 -0.1 3.6 3.6 0.2 3.9 C -3.2 4.1 -4.4 0.9 -3.0 -2.1 C -2.1 -3.5 -0.2 -4.0 1.6 -3.4"
+            d="M -3.9 -1.2 C -4.3 -4.6 1.1 -5.1 3.9 -2.5 C 5.2 -0.1 4.0 4.1 0.3 4.3 C -3.6 4.6 -4.9 1.0 -3.3 -2.4 C -2.2 -4.0 0.2 -4.5 2.4 -3.6"
             fill="none"
             stroke={line.color}
-            strokeWidth="1.75"
+            strokeWidth="1.85"
             strokeLinecap="round"
             strokeLinejoin="round"
           />
@@ -597,7 +625,7 @@ export default function BioTimeline() {
           <span className="font-medium text-stone-900">2 lines</span> for
           places, and{" "}
           <span className="font-medium text-stone-900">3 lines</span> for the
-          people (and dog) met along the way.
+          people met along the way.
         </p>
 
         {/* Interactive line legend / filter */}
@@ -673,7 +701,7 @@ export default function BioTimeline() {
       <div className="hidden md:block">
         {/* Sticky stave header aligned seamlessly with row 0 */}
         <div className="sticky top-0 z-30 bg-white/95 pt-3 pb-2.5 backdrop-blur-sm">
-          <div className="grid grid-cols-[54px_minmax(0,1.25fr)_minmax(0,0.98fr)_minmax(0,1.06fr)] gap-x-6">
+          <div className="grid grid-cols-[68px_minmax(0,1.25fr)_minmax(0,0.96fr)_minmax(0,1.08fr)] gap-x-6">
             <div className="font-mono text-[10px] uppercase tracking-wider text-stone-400">
               Year
             </div>
@@ -692,7 +720,7 @@ export default function BioTimeline() {
                 Activities &amp; Achievements
               </div>
               <div className="font-mono text-[10px] text-stone-400">
-                1 line · craft &amp; obsessions
+                1 line · craft &amp; milestones
               </div>
             </div>
 
@@ -728,7 +756,7 @@ export default function BioTimeline() {
                 People
               </div>
               <div className="font-mono text-[10px] text-stone-400">
-                3 lines · roots, builders, crew
+                3 lines · family, teams, friends
               </div>
             </div>
           </div>
@@ -738,12 +766,12 @@ export default function BioTimeline() {
         {/* Chronological rows */}
         <div>
           {chaptersToRender.map((chapter, chapterIdx) => (
-            <div key={chapter.year} className="group/row relative">
-              <div className="grid grid-cols-[54px_minmax(0,1.25fr)_minmax(0,0.98fr)_minmax(0,1.06fr)] gap-x-6 hover:bg-stone-50/55 transition-colors">
+            <div key={chapter.id} className="group/row relative">
+              <div className="grid grid-cols-[68px_minmax(0,1.25fr)_minmax(0,0.96fr)_minmax(0,1.08fr)] gap-x-6 hover:bg-stone-50/55 transition-colors">
                 {/* Year column */}
                 <div className="py-5 pr-2">
                   <span className="sticky top-14 font-mono text-xs font-medium tabular-nums text-stone-400 transition-colors group-hover/row:text-stone-900">
-                    {chapter.year}
+                    {chapter.yearLabel ?? chapter.year}
                   </span>
                 </div>
 
@@ -775,10 +803,10 @@ export default function BioTimeline() {
                     );
                     return (
                       <EntryBlock
-                        key={`${chapter.year}-act-${idx}`}
+                        key={`${chapter.id}-act-${idx}`}
                         entry={entry}
                         year={chapter.year}
-                        seed={chapter.year * 7 + idx + 1}
+                        seed={chapterIdx * 31 + idx + 1}
                         railNodeOffsetPx={nodeX - pad}
                         tickWidthPx={pad - nodeX - 6}
                         dimmed={isLineDimmed(entry.lineId, Boolean(entry.photo))}
@@ -815,10 +843,10 @@ export default function BioTimeline() {
                     );
                     return (
                       <EntryBlock
-                        key={`${chapter.year}-place-${idx}`}
+                        key={`${chapter.id}-place-${idx}`}
                         entry={entry}
                         year={chapter.year}
-                        seed={chapter.year * 11 + idx + 3}
+                        seed={chapterIdx * 37 + idx + 3}
                         railNodeOffsetPx={nodeX - pad}
                         tickWidthPx={pad - nodeX - 6}
                         dimmed={isLineDimmed(entry.lineId, Boolean(entry.photo))}
@@ -855,10 +883,10 @@ export default function BioTimeline() {
                     );
                     return (
                       <EntryBlock
-                        key={`${chapter.year}-people-${idx}`}
+                        key={`${chapter.id}-people-${idx}`}
                         entry={entry}
                         year={chapter.year}
-                        seed={chapter.year * 13 + idx + 5}
+                        seed={chapterIdx * 43 + idx + 5}
                         railNodeOffsetPx={nodeX - pad}
                         tickWidthPx={pad - nodeX - 6}
                         dimmed={isLineDimmed(entry.lineId, Boolean(entry.photo))}
@@ -870,14 +898,14 @@ export default function BioTimeline() {
               </div>
 
               {chapterIdx < chaptersToRender.length - 1 && (
-                <HandRule seed={chapter.year} subtle />
+                <HandRule seed={chapterIdx * 19 + 7} subtle />
               )}
             </div>
           ))}
         </div>
 
         {/* End-of-line 2026 hand-sketched arrowheads */}
-        <div className="grid grid-cols-[54px_minmax(0,1.25fr)_minmax(0,0.98fr)_minmax(0,1.06fr)] gap-x-6">
+        <div className="grid grid-cols-[68px_minmax(0,1.25fr)_minmax(0,0.96fr)_minmax(0,1.08fr)] gap-x-6">
           <div className="pt-1 font-mono text-[10px] text-stone-300">2026+</div>
           <div
             className="relative h-6"
@@ -925,7 +953,7 @@ export default function BioTimeline() {
           ];
           return (
             <div
-              key={`mob-${chapter.year}`}
+              key={`mob-${chapter.id}`}
               className="relative pb-7"
               style={{ paddingLeft: `${MOBILE_PADDING_LEFT}px` }}
             >
@@ -936,11 +964,11 @@ export default function BioTimeline() {
                 rowIdx={chapterIdx}
                 activeLinesInChapter={chapter.activeLines}
                 isRailHighlighted={isRailHighlighted}
-                amp={1.45}
+                amp={2.0}
               />
 
               <div className="mb-2.5 font-mono text-xs font-semibold tabular-nums text-stone-900">
-                {chapter.year}
+                {chapter.yearLabel ?? chapter.year}
               </div>
 
               <div className="space-y-4">
@@ -949,17 +977,17 @@ export default function BioTimeline() {
                     entry.lineId,
                     chapterIdx,
                     MOBILE_RAIL_X[entry.lineId],
-                    1.45
+                    2.0
                   );
                   const nodeX = Number(
                     idx === 0 ? seg.nodeXFirst : seg.nodeXLater
                   );
                   return (
                     <EntryBlock
-                      key={`mob-${chapter.year}-${idx}`}
+                      key={`mob-${chapter.id}-${idx}`}
                       entry={entry}
                       year={chapter.year}
-                      seed={chapter.year * 17 + idx + 9}
+                      seed={chapterIdx * 53 + idx + 9}
                       railNodeOffsetPx={nodeX - MOBILE_PADDING_LEFT}
                       tickWidthPx={MOBILE_PADDING_LEFT - nodeX - 8}
                       dimmed={isLineDimmed(entry.lineId, Boolean(entry.photo))}
@@ -983,7 +1011,7 @@ export default function BioTimeline() {
             coords={MOBILE_RAIL_X}
             gutterWidth={MOBILE_GUTTER_WIDTH}
             finalBoundaryIdx={chaptersToRender.length}
-            amp={1.45}
+            amp={2.0}
           />
         </div>
       </div>

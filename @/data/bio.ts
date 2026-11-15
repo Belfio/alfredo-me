@@ -1,16 +1,16 @@
-import SkipperImg from "@/assets/skipper.png";
 import CagliariImg from "@/assets/bio/cagliari.jpg";
 import OlivettiImg from "@/assets/bio/olivetti.jpg";
 import Mac93Img from "@/assets/bio/mac93.jpg";
 import ModemImg from "@/assets/bio/modem.jpg";
 import GuitarImg from "@/assets/bio/guitar.jpg";
-import MilanImg from "@/assets/bio/milan.jpg";
+import ValenciaImg from "@/assets/bio/valencia.jpg";
 import LabImg from "@/assets/bio/lab.jpg";
+import MilanImg from "@/assets/bio/milan.jpg";
 import LondonImg from "@/assets/bio/london.jpg";
 import PcbImg from "@/assets/bio/pcb.jpg";
 import ShenzhenImg from "@/assets/bio/shenzhen.jpg";
-import AlpsImg from "@/assets/bio/alps.jpg";
 import GigImg from "@/assets/bio/gig.jpg";
+import SkipperImg from "@/assets/skipper.png";
 
 export type LineGroup = "activities" | "places" | "people";
 
@@ -37,7 +37,7 @@ export const BIO_LINES: BioLineMeta[] = [
     id: "act-1",
     group: "activities",
     indexInGroup: 0,
-    label: "Activities & Craft",
+    label: "Activities & Achievements",
     shortLabel: "Craft",
     color: "#1c1917",
     softBg: "rgba(28, 25, 23, 0.06)",
@@ -47,7 +47,7 @@ export const BIO_LINES: BioLineMeta[] = [
     group: "places",
     indexInGroup: 0,
     label: "Home Base",
-    shortLabel: "Base",
+    shortLabel: "Home",
     color: "#b45309",
     softBg: "rgba(180, 83, 9, 0.08)",
   },
@@ -55,7 +55,7 @@ export const BIO_LINES: BioLineMeta[] = [
     id: "place-2",
     group: "places",
     indexInGroup: 1,
-    label: "Courts & Stints",
+    label: "Exchanges & Stints",
     shortLabel: "Stints",
     color: "#c2410c",
     softBg: "rgba(194, 65, 12, 0.08)",
@@ -64,8 +64,8 @@ export const BIO_LINES: BioLineMeta[] = [
     id: "people-1",
     group: "people",
     indexInGroup: 0,
-    label: "Family & Roots",
-    shortLabel: "Roots",
+    label: "Family & Partners",
+    shortLabel: "Family",
     color: "#0f766e",
     softBg: "rgba(15, 118, 110, 0.08)",
   },
@@ -73,8 +73,8 @@ export const BIO_LINES: BioLineMeta[] = [
     id: "people-2",
     group: "people",
     indexInGroup: 1,
-    label: "Mentors & Builders",
-    shortLabel: "Builders",
+    label: "Cohorts & Teams",
+    shortLabel: "Teams",
     color: "#0369a1",
     softBg: "rgba(3, 105, 161, 0.08)",
   },
@@ -82,8 +82,8 @@ export const BIO_LINES: BioLineMeta[] = [
     id: "people-3",
     group: "people",
     indexInGroup: 2,
-    label: "Friends & Crew",
-    shortLabel: "Crew",
+    label: "Lifelong Friends",
+    shortLabel: "Friends",
     color: "#4338ca",
     softBg: "rgba(67, 56, 202, 0.08)",
   },
@@ -106,8 +106,9 @@ export type BioEntry = {
 };
 
 export type BioChapter = {
+  id: string;
   year: number;
-  endYear?: number;
+  yearLabel?: string;
   activeLines: LineId[];
   activities: BioEntry[];
   places: BioEntry[];
@@ -116,6 +117,7 @@ export type BioChapter = {
 
 export const BIO_CHAPTERS: BioChapter[] = [
   {
+    id: "1988",
     year: 1988,
     activeLines: ["act-1", "place-1", "people-1"],
     activities: [
@@ -123,34 +125,35 @@ export const BIO_CHAPTERS: BioChapter[] = [
         lineId: "act-1",
         title: "Born in Cagliari",
         detail:
-          "Day one on the southern coast of Sardinia — bright Mediterranean light, warm maestrale wind off the gulf, and salt air in every room.",
+          "Day one on the southern coast of Sardinia — Mediterranean light, maestrale wind off the gulf, and salt air.",
       },
     ],
     places: [
       {
         lineId: "place-1",
         title: "Cagliari · Sardinia",
-        span: "1988–2006",
+        span: "1988–2010",
         detail:
-          "Sun-bleached limestone bastions, pink flamingos in the lagoons, and the long curve of Poetto beach under Sella del Diavolo.",
+          "Limestone bastions, Poetto beach under Sella del Diavolo, and home base from childhood through university.",
         photo: {
           src: CagliariImg,
           alt: "Aerial view of Poetto beach and bay in Cagliari, Sardinia",
-          caption: "Golfo degli Angeli & Poetto, Cagliari — line #1 starts here",
+          caption: "Golfo degli Angeli & Poetto, Cagliari — where line #1 starts",
         },
       },
     ],
     people: [
       {
         lineId: "people-1",
-        title: "Parents & Sardinian Family",
+        title: "Family in Cagliari",
         span: "1988–",
         detail:
-          "Big Sunday lunches that stretched past four o'clock, shelves full of tools and manuals, and patience for a kid who took everything apart.",
+          "Sardinian roots, long Sunday lunches, and endless patience for a kid taking household electronics apart.",
       },
     ],
   },
   {
+    id: "1992",
     year: 1992,
     activeLines: ["act-1", "place-1", "people-1"],
     activities: [
@@ -158,11 +161,11 @@ export const BIO_CHAPTERS: BioChapter[] = [
         lineId: "act-1",
         title: "Olivetti computer games at home",
         detail:
-          "Age four, kneeling on a dining chair in front of the family Olivetti CRT, memorising floppy-disk boot commands just to launch DOS games.",
+          "Age four in front of the family Olivetti CRT, memorising floppy-disk commands just to boot games.",
         photo: {
           src: OlivettiImg,
-          alt: "Vintage Olivetti M24 personal computer with CRT monitor and keyboard",
-          caption: "Beige Olivetti iron — first glowing phosphor screen at home",
+          alt: "Vintage Olivetti personal computer with CRT monitor and keyboard",
+          caption: "Beige Olivetti iron — first glowing screen at home",
         },
       },
     ],
@@ -170,18 +173,19 @@ export const BIO_CHAPTERS: BioChapter[] = [
     people: [],
   },
   {
+    id: "1993",
     year: 1993,
     activeLines: ["act-1", "place-1", "place-2", "people-1", "people-3"],
     activities: [
       {
         lineId: "act-1",
-        title: "Macintosh at five & starting basketball",
+        title: "Mac computer at five & starting basketball",
         detail:
-          "Moved to a compact Apple Macintosh with its startup chime and one-button mouse, and laced up sneakers for minibasket the same year.",
+          "Switched to an Apple Macintosh with its startup chime and one-button mouse, and started minibasket the same year.",
         photo: {
           src: Mac93Img,
           alt: "Compact Apple Macintosh Classic computer with keyboard and mouse",
-          caption: "1993 Macintosh on the desk — System 7 icons & happy Mac",
+          caption: "1993 Macintosh — five years old, System 7 & happy Mac",
         },
       },
     ],
@@ -189,9 +193,9 @@ export const BIO_CHAPTERS: BioChapter[] = [
       {
         lineId: "place-2",
         title: "Cagliari Basketball Courts",
-        span: "1993–2005",
+        span: "1993–2006",
         detail:
-          "Echoing neighbourhood parquet and sun-baked outdoor hoops three afternoons a week.",
+          "Neighbourhood gyms and outdoor hoops week after week growing up.",
       },
     ],
     people: [
@@ -200,24 +204,25 @@ export const BIO_CHAPTERS: BioChapter[] = [
         title: "Davide, Giacomo & Pasquale",
         span: "1993–",
         detail:
-          "Met on the basketball court at five years old — teammates from minibasket drills to endless summer afternoons and decades beyond.",
+          "Met playing basketball at five years old — teammates and lifelong friends ever since.",
       },
     ],
   },
   {
+    id: "1997",
     year: 1997,
     activeLines: ["act-1", "place-1", "place-2", "people-1", "people-3"],
     activities: [
       {
         lineId: "act-1",
-        title: "Carmageddon & 54k dial-up internet",
+        title: "Carmageddon & 54k internet",
         detail:
-          "Afternoon mayhem in Carmageddon followed by the unmistakable screech-and-hiss of a 54k modem handshake tying up the house phone line.",
+          "Afternoon chaos in Carmageddon and the screech-and-hiss of a 54k dial-up modem tying up the house phone line.",
         link: { label: "play /carmageddon", href: "/carmageddon" },
         photo: {
           src: ModemImg,
           alt: "Analog 56k dial-up modem with red status LEDs",
-          caption: "Blinking carrier LEDs — 'don't pick up the phone!'",
+          caption: "54k carrier LEDs — 'don't pick up the phone!'",
         },
       },
     ],
@@ -225,6 +230,7 @@ export const BIO_CHAPTERS: BioChapter[] = [
     people: [],
   },
   {
+    id: "1999",
     year: 1999,
     activeLines: [
       "act-1",
@@ -239,21 +245,22 @@ export const BIO_CHAPTERS: BioChapter[] = [
         lineId: "act-1",
         title: "My first computer — self-taught C, Napster & WinMX",
         detail:
-          "A dedicated tower in my bedroom at eleven: teaching myself pointers, loops, and C compilers from scratch while babysitting 4 KB/s MP3 queues on Napster and WinMX.",
+          "Finally my own machine at eleven: teaching myself C from scratch while nursing overnight MP3 queues on Napster and WinMX.",
       },
     ],
     places: [],
     people: [
       {
         lineId: "people-2",
-        title: "Late-Night IRC & C Tutorials",
-        span: "1999–2004",
+        title: "Early C Forums & P2P Underground",
+        span: "1999–2003",
         detail:
-          "Plain-text guides, Italian coding forums, and strangers debugging segfaults over dial-up past midnight.",
+          "Plain-text C tutorials, compiler errors solved with strangers online, and dial-up file-sharing chatrooms.",
       },
     ],
   },
   {
+    id: "2001",
     year: 2001,
     activeLines: [
       "act-1",
@@ -268,21 +275,22 @@ export const BIO_CHAPTERS: BioChapter[] = [
         lineId: "act-1",
         title: "Deus Ex, music & punk",
         detail:
-          "Crawling through UNATCO air ducts and memorising four-digit keypads in Deus Ex while falling headfirst into music and blasting raw three-chord punk off burned Verbatim CD-Rs.",
+          "Obsessed with nano-augmentations and conspiracies in Deus Ex — a rabbit hole that planted the seed for biomedical engineering — alongside loud punk records.",
       },
     ],
     places: [],
     people: [
       {
         lineId: "people-3",
-        title: "Sharpie CD-R Swaps",
-        span: "2001–2005",
+        title: "Daniele & Giovanni",
+        span: "2001–",
         detail:
-          "Trading scratched punk mixes and game ISOs in backpack pockets with Davide, Giacomo, and Pasquale.",
+          "New close crew bonded over punk records, burned CDs, and late nights talking music and games.",
       },
     ],
   },
   {
+    id: "2002",
     year: 2002,
     activeLines: [
       "act-1",
@@ -295,64 +303,45 @@ export const BIO_CHAPTERS: BioChapter[] = [
     activities: [
       {
         lineId: "act-1",
-        title: "Metal music & loud amplifiers",
+        title: "Metal music",
         detail:
-          "Graduated from three chords to palm-muted metal riffs, double-kick records, and garage rehearsal amps turned up just past polite.",
+          "Moved from three-chord punk into heavy riffs, fast double-kick albums, and cranked guitar amps.",
         photo: {
           src: GuitarImg,
           alt: "Vintage silverface guitar combo amplifier",
-          caption: "High-gain riffs & ringing ears after rehearsal",
+          caption: "High-gain riffs & loud rehearsal rooms",
         },
+      },
+    ],
+    places: [],
+    people: [
+      {
+        lineId: "people-1",
+        title: "Francesca — first girlfriend",
+        span: "2002–2010",
+        detail:
+          "Teenage years through university — eight formative years growing up together.",
+      },
+    ],
+  },
+  {
+    id: "2007",
+    year: 2007,
+    activeLines: ["act-1", "place-1", "people-1", "people-2", "people-3"],
+    activities: [
+      {
+        lineId: "act-1",
+        title: "University — Biomedical Engineering (#1 out of 1,000+)",
+        detail:
+          "Chose Biomedical Engineering directly because of Deus Ex, and ranked 1st overall out of more than 1,000 candidates on the entrance test.",
       },
     ],
     places: [],
     people: [],
   },
   {
-    year: 2007,
-    activeLines: ["act-1", "place-1", "people-1", "people-2", "people-3"],
-    activities: [
-      {
-        lineId: "act-1",
-        title: "Biomedical Engineering at Politecnico di Milano",
-        detail:
-          "Packed bags across the Tyrrhenian Sea for biosignal processing, muscle electrophysiology, and linear algebra fueled by 80-cent campus espressos.",
-        link: { label: "polimi.it", href: "https://www.polimi.it/" },
-      },
-    ],
-    places: [
-      {
-        lineId: "place-1",
-        title: "Milan · Città Studi",
-        span: "2007–2012",
-        detail:
-          "Winter fog, rattling yellow ATM 1500 trams down Via Pacini, and courtyard study marathons.",
-        photo: {
-          src: MilanImg,
-          alt: "Historic yellow ATM Class 1500 tram on a Milan street",
-          caption: "Line 19/33 rattle through Milan — alarm clock & commute",
-        },
-      },
-    ],
-    people: [
-      {
-        lineId: "people-2",
-        title: "Prof. Ferretti's Biosignals Bench",
-        span: "2008–2012",
-        detail:
-          "First lab bench where noisy EMG traces started looking like a decodable alphabet.",
-      },
-      {
-        lineId: "people-3",
-        title: "Marco & the Città Studi Flat",
-        span: "2007–2012",
-        detail:
-          "Flatmates who insisted on cooking pasta at 1:15 a.m. the night before every control-theory exam.",
-      },
-    ],
-  },
-  {
-    year: 2011,
+    id: "2010-valencia",
+    year: 2010,
     activeLines: [
       "act-1",
       "place-1",
@@ -364,73 +353,180 @@ export const BIO_CHAPTERS: BioChapter[] = [
     activities: [
       {
         lineId: "act-1",
-        title: "Neural signal decoding at Case Western Reserve",
+        title: "Erasmus in Valencia & top 5% of course",
         detail:
-          "Visiting research stint writing real-time biosignal classifiers and surviving Lake Erie blizzards at −18°C.",
+          "Spanish exchange semester in Valencia while finishing in the top 5% of my Biomedical Engineering cohort.",
+      },
+    ],
+    places: [
+      {
+        lineId: "place-2",
+        title: "Valencia · Spain",
+        span: "2010",
+        detail:
+          "Erasmus life between campus labs, warm Mediterranean nights, and Malvarrosa beach.",
+        photo: {
+          src: ValenciaImg,
+          alt: "Malvarrosa beach promenade and palms in Valencia, Spain",
+          caption: "Valencia — Erasmus sunshine & turning-point year",
+        },
+      },
+    ],
+    people: [
+      {
+        lineId: "people-1",
+        title: "End of first relationship",
+        span: "2010",
+        detail:
+          "Closed an eight-year chapter with Francesca during a year of big transitions abroad.",
+      },
+    ],
+  },
+  {
+    id: "2010-usa",
+    year: 2010,
+    yearLabel: "2010 · US",
+    activeLines: [
+      "act-1",
+      "place-1",
+      "place-2",
+      "people-1",
+      "people-2",
+      "people-3",
+    ],
+    activities: [
+      {
+        lineId: "act-1",
+        title: "Case Western Reserve University — research & data science",
+        detail:
+          "Crossed the Atlantic for biomedical research and data science — writing signal-processing and machine-learning pipelines on real clinical datasets.",
         link: { label: "case.edu", href: "https://case.edu/" },
         photo: {
           src: LabImg,
           alt: "Tektronix analog oscilloscope displaying a clean waveform",
-          caption: "Late-night bench trace, biomedical instrumentation lab",
+          caption: "Research bench & first deep dive into data science",
         },
       },
     ],
     places: [
       {
         lineId: "place-2",
-        title: "Cleveland, Ohio",
-        span: "2011–2012",
+        title: "Cleveland, Ohio · USA",
+        span: "2010–2011",
         detail:
-          "Lake-effect snowbanks along Euclid Avenue, 24-hour diners, and quiet Sunday afternoons at the Cleveland Museum of Art.",
+          "Case Western campus along Euclid Avenue and Lake Erie winters.",
       },
     ],
     people: [
       {
         lineId: "people-2",
-        title: "Dr. Lindqvist & Neural Lab Cohort",
-        span: "2011–2014",
+        title: "Case Western Research Lab",
+        span: "2010–2011",
         detail:
-          "Three researchers from three time zones sharing one oscilloscope and a two-liter thermos of filter coffee.",
+          "Researchers and engineers working at the intersection of biosignals and data.",
       },
     ],
   },
   {
-    year: 2013,
+    id: "2011",
+    year: 2011,
+    activeLines: ["act-1", "place-1", "people-1", "people-2", "people-3"],
+    activities: [
+      {
+        lineId: "act-1",
+        title: "Politecnico di Milano — Electronics",
+        detail:
+          "Focused on hardware, analog/digital electronics, and instrumentation at Polimi.",
+        link: { label: "polimi.it", href: "https://www.polimi.it/" },
+      },
+    ],
+    places: [
+      {
+        lineId: "place-1",
+        title: "Milano",
+        span: "2011–2012",
+        detail:
+          "Lived in Milan — yellow trams rattling through Città Studi, espresso bars, and late lab evenings.",
+        photo: {
+          src: MilanImg,
+          alt: "Historic yellow ATM Class 1500 tram on a Milan street",
+          caption: "Living in Milano — Polimi & Città Studi",
+        },
+      },
+    ],
+    people: [
+      {
+        lineId: "people-1",
+        title: "Carla — second girlfriend",
+        span: "2011–2019",
+        detail:
+          "Started an eight-year relationship in Milan that carried across the move to London.",
+      },
+    ],
+  },
+  {
+    id: "2012",
+    year: 2012,
     activeLines: ["act-1", "place-1", "people-1", "people-2", "people-3"],
     activities: [
       {
         lineId: "act-1",
         title: "Imperial College London",
         detail:
-          "Crossed the Channel for bioengineering & software; traded MATLAB scripts for C++, Python, and wearable sensor prototypes.",
+          "Moved to South Kensington to complete postgraduate biomedical engineering & software work at Imperial.",
         link: { label: "imperial.ac.uk", href: "https://www.imperial.ac.uk/" },
       },
     ],
     places: [
       {
         lineId: "place-1",
-        title: "London · South Kensington to East London",
-        span: "2013–2026",
+        title: "London · UK",
+        span: "2012–",
         detail:
-          "Arrived with two suitcases, a soldering iron, and naive optimism about British drizzle; stayed for thirteen years and counting.",
+          "Landed at Exhibition Road with suitcases and a soldering iron; London became long-term home base.",
         photo: {
           src: LondonImg,
-          alt: "South Kensington street in London with red double-decker bus",
-          caption: "Exhibition Road & South Kensington — first London postcode",
+          alt: "Imperial College Queen's Tower and red bus in South Kensington, London",
+          caption: "South Kensington — arriving at Imperial & London in 2012",
         },
       },
     ],
+    people: [],
+  },
+  {
+    id: "2013",
+    year: 2013,
+    activeLines: ["act-1", "place-1", "people-1", "people-2", "people-3"],
+    activities: [
+      {
+        lineId: "act-1",
+        title: "Graduation & founded Flicktek",
+        detail:
+          "Graduated and went straight into building Flicktek — biometric wrist wearables decoding finger gestures from tendon movement, leading to two granted patents.",
+        link: {
+          label: "Patent US11281301",
+          href: "https://patents.google.com/patent/US11281301B2/en",
+        },
+        photo: {
+          src: PcbImg,
+          alt: "Close-up of copper traces on a printed circuit board",
+          caption: "Early sensor PCB prototypes right out of university",
+        },
+      },
+    ],
+    places: [],
     people: [
       {
-        lineId: "people-3",
-        title: "Samir & Claire",
-        span: "2013–",
+        lineId: "people-2",
+        title: "Flicktek Co-Founders & Hardware Engineers",
+        span: "2013–2016",
         detail:
-          "Met over lukewarm cider after a Friday seminar; undefeated Sunday-roast and gig regulars ever since.",
+          "First startup trenches turning research sensors into wearable hardware.",
       },
     ],
   },
   {
+    id: "2015",
     year: 2015,
     activeLines: [
       "act-1",
@@ -443,46 +539,38 @@ export const BIO_CHAPTERS: BioChapter[] = [
     activities: [
       {
         lineId: "act-1",
-        title: "Flicktek & two gesture-recognition patents",
+        title: "HAX Accelerator & SOSV in China",
         detail:
-          "Built biometric wrist sensors decoding finger micro-gestures from tendon biomechanics; backed by SOSV and awarded patents WO2015033327 & US11281301.",
-        link: {
-          label: "Patent US11281301",
-          href: "https://patents.google.com/patent/US11281301B2/en",
-        },
-        photo: {
-          src: PcbImg,
-          alt: "Close-up of copper traces on a printed circuit board",
-          caption: "Rev-4 sensor flex-PCB traces between firmware spins",
-        },
+          "Joined HAX (backed by SOSV) to take Flicktek from prototype boards to manufacturable consumer hardware at Shenzhen speed.",
       },
     ],
     places: [
       {
         lineId: "place-2",
-        title: "Shenzhen · Huaqiangbei",
+        title: "Shenzhen · China",
         span: "2015–2016",
         detail:
-          "Living ten minutes from ten-story electronics markets, turning schematic edits at breakfast into soldered boards by dinner.",
+          "Huaqiangbei component towers, factory floors, and morning schematics turned into PCBs by evening.",
         photo: {
           src: ShenzhenImg,
           alt: "Huaqiangbei electronics district skyline in Shenzhen",
-          caption: "Huaqiangbei — hardware speedrun capital of the world",
+          caption: "Shenzhen & HAX — hardware manufacturing speedrun",
         },
       },
     ],
     people: [
       {
         lineId: "people-2",
-        title: "SOSV Cohort & Master Chen",
-        span: "2015–2017",
+        title: "HAX & SOSV Cohort",
+        span: "2015–2016",
         detail:
-          "Hardware founders running on oolong tea, plus a DFM tooling veteran who could spot a cold solder joint from three meters away.",
+          "Hardware founders and mentors living inside factories and shipping against impossible deadlines.",
       },
     ],
   },
   {
-    year: 2018,
+    id: "2016",
+    year: 2016,
     activeLines: [
       "act-1",
       "place-1",
@@ -494,103 +582,73 @@ export const BIO_CHAPTERS: BioChapter[] = [
     activities: [
       {
         lineId: "act-1",
-        title: "Betterspace — enterprise mental wellbeing",
+        title: "Shipped 2,000 units of Clip — closed down Flicktek",
         detail:
-          "Architected and scaled an employee wellbeing marketplace adopted by Accenture and global enterprises, taking it all the way from zero to exit.",
-        link: { label: "betterspace.uk", href: "https://www.betterspace.uk/" },
+          "Got 2,000 gesture-control Clip units off the assembly line and into backers' hands before winding Flicktek down — the hardest, sharpest education in hardware.",
       },
     ],
-    places: [
-      {
-        lineId: "place-2",
-        title: "Dolomites & Chamonix",
-        span: "autumns '18–'19",
-        detail:
-          "High-ridge scrambles between product releases — best debugging happens above 2,400m with phone on airplane mode.",
-        photo: {
-          src: AlpsImg,
-          alt: "Limestone peaks of the Dolomites rising above an alpine valley",
-          caption: "Alta Via limestone ridges — annual head-clearing ritual",
-        },
-      },
-    ],
-    people: [
-      {
-        lineId: "people-2",
-        title: "Betterspace Founding Crew",
-        span: "2018–2022",
-        detail:
-          "Small Shoreditch room, giant whiteboard, and an agreement that nobody booked meetings before 10:30 a.m.",
-      },
-    ],
+    places: [],
+    people: [],
   },
   {
-    year: 2020,
-    activeLines: [
-      "act-1",
-      "place-1",
-      "place-2",
-      "people-1",
-      "people-2",
-      "people-3",
-    ],
-    activities: [
-      {
-        lineId: "act-1",
-        title: "78%-hydration sourdough, Solana Rust & essays",
-        detail:
-          "Kept a fiercely active rye starter named Ohm, crossed 1900 rapid chess at 2 a.m., and began publishing notes on AI products and on-chain systems.",
-      },
-    ],
-    places: [
-      {
-        lineId: "place-2",
-        title: "Sardinia Remote Autumn",
-        span: "autumn 2020",
-        detail:
-          "Two quiet months shipping code near the sea in October light after lockdown lifted.",
-      },
-    ],
-    people: [
-      {
-        lineId: "people-1",
-        title: "Sunday Video Lunches with Cagliari",
-        span: "2020–2021",
-        detail:
-          "Synchronised family pasta lunches across time zones, complete with remote critique of malloreddus ridges.",
-      },
-    ],
-  },
-  {
-    year: 2022,
+    id: "2017",
+    year: 2017,
     activeLines: ["act-1", "place-1", "people-1", "people-2", "people-3"],
     activities: [
       {
         lineId: "act-1",
-        title: "Betterspace exit & early LLM pipelines",
+        title: "Zinc & co-founding Betterspace",
         detail:
-          "Closed the acquisition chapter, built green-lending software (GL1) for banks, and hacked on document-extraction agents before chat wrappers were everywhere.",
+          "Joined the Zinc venture builder in London and launched Betterspace — an enterprise mental-wellbeing platform used by Accenture and major employers.",
+        link: { label: "betterspace.uk", href: "https://www.betterspace.uk/" },
       },
     ],
     places: [],
     people: [
       {
-        lineId: "people-3",
-        title: "Skipper joins the pack",
-        span: "2022–",
+        lineId: "people-2",
+        title: "Zinc Cohort & Betterspace Team",
+        span: "2017–2022",
         detail:
-          "Border Collie, chief walk scheduler, and undefeated interceptor of airborne tennis balls across Hackney marshes.",
-        photo: {
-          src: SkipperImg,
-          alt: "Ink and watercolor portrait of Skipper the Border Collie",
-          caption: "Skipper — VP of Dawn Patrols & Morale",
-          aspect: "portrait",
-        },
+          "Founders, clinicians, and engineers building B2B wellbeing software from zero to acquisition.",
       },
     ],
   },
   {
-    year: 2024,
+    id: "2019",
+    year: 2019,
+    activeLines: ["act-1", "place-1", "people-1", "people-2", "people-3"],
+    activities: [],
+    places: [],
+    people: [
+      {
+        lineId: "people-1",
+        title: "Broke up with Carla",
+        span: "2019",
+        detail:
+          "Parted ways after eight years together between Milan and London.",
+      },
+    ],
+  },
+  {
+    id: "2020",
+    year: 2020,
+    activeLines: ["act-1", "place-1", "people-1", "people-2", "people-3"],
+    activities: [],
+    places: [],
+    people: [
+      {
+        lineId: "people-1",
+        title: "Met my new girlfriend — and future wife",
+        span: "2020–",
+        detail:
+          "Started a new chapter together in 2020 that led all the way to getting married in 2026.",
+      },
+    ],
+  },
+  {
+    id: "2022",
+    year: 2022,
     activeLines: [
       "act-1",
       "place-1",
@@ -602,78 +660,87 @@ export const BIO_CHAPTERS: BioChapter[] = [
     activities: [
       {
         lineId: "act-1",
-        title: "CTO at Gotobeat — AI-powered live music operator",
+        title: "Sold Betterspace, travelled & built AI projects",
         detail:
-          "Building demand-prediction models and promoter tooling to scout tour-ready artists, price rooms, and pack grassroots venues across the UK and Europe.",
+          "Completed the Betterspace exit, took proper time out on the road, and went deep building hands-on AI products, medical/document extraction pipelines, and essays.",
+        link: { label: "projects", href: "/#projects" },
+        photo: {
+          src: SkipperImg,
+          alt: "Watercolor portrait of Alfredo wearing a skipper cap",
+          caption: "Post-exit breather — travelling & hacking on AI",
+          aspect: "portrait",
+        },
+      },
+    ],
+    places: [
+      {
+        lineId: "place-2",
+        title: "Post-Exit Travels",
+        span: "2022–2023",
+        detail:
+          "Months living out of a backpack across new cities before diving back into code.",
+      },
+    ],
+    people: [],
+  },
+  {
+    id: "2024",
+    year: 2024,
+    activeLines: ["act-1", "place-1", "people-1", "people-2", "people-3"],
+    activities: [
+      {
+        lineId: "act-1",
+        title: "Joined Gotobeat as CTO",
+        detail:
+          "Full circle back to punk & metal roots: leading engineering and AI demand prediction for an operator putting on hundreds of live shows across the UK and Europe.",
         link: { label: "gotobeat.com", href: "https://gotobeat.com/tech" },
         photo: {
           src: GigImg,
           alt: "Sold-out marquee at Brixton Academy music venue in London",
           caption:
-            "Sold-out London nights — from Napster MP3s and metal gigs to packing real venues",
+            "From burned CD-Rs in 2001 to packing live music rooms at Gotobeat",
         },
       },
     ],
-    places: [
-      {
-        lineId: "place-2",
-        title: "Tokyo & Lisbon",
-        span: "2024",
-        detail:
-          "Two weeks studying eight-seat vinyl kissaten in Shibuya followed by hills and cortados in Príncipe Real.",
-      },
-    ],
+    places: [],
     people: [
       {
         lineId: "people-2",
-        title: "Gotobeat Team, Bookers & Touring Bands",
+        title: "Gotobeat Team, Promoters & Artists",
         span: "2024–",
         detail:
-          "Engineers, promoters, and soundcheck pros turning models into 500 people shouting the chorus back.",
+          "Engineers and bookers turning data models into packed grassroots venues.",
       },
     ],
   },
   {
+    id: "2026",
     year: 2026,
-    activeLines: [
-      "act-1",
-      "place-1",
-      "place-2",
-      "people-1",
-      "people-2",
-      "people-3",
-    ],
+    activeLines: ["act-1", "place-1", "people-1", "people-2", "people-3"],
     activities: [
       {
         lineId: "act-1",
-        title: "Pegasus Lab & fleets of coding agents",
+        title: "Got married",
         detail:
-          "Prototyping bio-integrated sportswear (EMG + NIRS + closed-loop recovery) on weekends while running multi-agent engineering workflows and live tours by day.",
-        link: { label: "Pegasus note", href: "/project/pegasus" },
+          "Thirty-eight years from Cagliari to London — celebrating our wedding while shipping live music tech and weekend bio-hardware experiments.",
       },
     ],
     places: [
       {
         lineId: "place-1",
-        title: "London",
-        span: "present",
-        detail: "Home studio, morning park laps with Skipper, late gig curfews.",
-      },
-      {
-        lineId: "place-2",
-        title: "Cagliari & Milan",
-        span: "frequent",
+        title: "London & Sardinia",
+        span: "2026",
         detail:
-          "Flying south whenever an excuse appears for espresso at the counter and a swim off Poetto.",
+          "Home in London with deep roots always pulling back to Cagliari.",
       },
     ],
     people: [
       {
         lineId: "people-1",
-        title: "Six lines still running",
-        span: "1988 → 2026",
+        title: "Married — six years on from 2020",
+        span: "2026–",
         detail:
-          "Family in Sardinia, Davide, Giacomo & Pasquale since '93, builders in the trenches, and a Border Collie waiting by the door.",
+          "Surrounded by family from Sardinia, friends since five-year-old basketball and teenage punk bands, and everyone met along the way.",
       },
     ],
   },
