@@ -13,33 +13,356 @@ const LINE_MAP: Record<LineId, BioLineMeta> = Object.fromEntries(
   BIO_LINES.map((l) => [l.id, l])
 ) as Record<LineId, BioLineMeta>;
 
+const LINE_INDEX: Record<LineId, number> = {
+  "act-1": 0,
+  "place-1": 1,
+  "place-2": 2,
+  "people-1": 3,
+  "people-2": 4,
+  "people-3": 5,
+};
+
 // Desktop rail X offsets (px from left edge of each column)
+// Slightly wider spacing so hand-drawn wobble never collides cleanly
 const DESKTOP_RAILS = {
-  activities: { paddingLeft: 24, coords: { "act-1": 6 } as Record<string, number> },
+  activities: {
+    gutterWidth: 28,
+    paddingLeft: 30,
+    coords: { "act-1": 9 } as Record<string, number>,
+  },
   places: {
-    paddingLeft: 36,
-    coords: { "place-1": 6, "place-2": 18 } as Record<string, number>,
+    gutterWidth: 42,
+    paddingLeft: 44,
+    coords: { "place-1": 9, "place-2": 24 } as Record<string, number>,
   },
   people: {
-    paddingLeft: 48,
+    gutterWidth: 56,
+    paddingLeft: 58,
     coords: {
-      "people-1": 6,
-      "people-2": 18,
-      "people-3": 30,
+      "people-1": 9,
+      "people-2": 24,
+      "people-3": 39,
     } as Record<string, number>,
   },
 };
 
-// Mobile 6-line metro stave (1 + 2 + 3 grouped rails in left gutter)
-const MOBILE_PADDING_LEFT = 64;
+// Mobile 6-line hand-drawn stave in left gutter
+const MOBILE_GUTTER_WIDTH = 68;
+const MOBILE_PADDING_LEFT = 72;
 const MOBILE_RAIL_X: Record<LineId, number> = {
-  "act-1": 6,
-  "place-1": 18,
-  "place-2": 25,
-  "people-1": 37,
-  "people-2": 44,
-  "people-3": 51,
+  "act-1": 7,
+  "place-1": 19,
+  "place-2": 28,
+  "people-1": 40,
+  "people-2": 49,
+  "people-3": 58,
 };
+
+// Deterministic rounded pseudo-random in [-1, 1] (SSR-safe, zero hydration drift)
+function jitter(seed: number): number {
+  const raw = Math.sin(seed * 127.1 + 311.7) * 43758.5453123;
+  const frac = raw - Math.floor(raw);
+  return Math.round((frac * 2 - 1) * 100) / 100;
+}
+
+function f(n: number): string {
+  return (Math.round(n * 100) / 100).toString();
+}
+
+// Continuous C1-matched boundary X & slope so adjacent rows join seamlessly
+function railBoundaryX(
+  lineId: LineId,
+  boundaryIdx: number,
+  baseX: number,
+  amp = 2.4
+): number {
+  const li = LINE_INDEX[lineId] + 1;
+  return baseX + jitter(li * 97 + boundaryIdx * 31) * amp;
+}
+
+function railBoundarySlope(lineId: LineId, boundaryIdx: number): number {
+  const li = LINE_INDEX[lineId] + 1;
+  return jitter(li * 193 + boundaryIdx * 53 + 17) * 0.075;
+}
+
+// Generates multi-point fountain-pen stroke + secondary fine re-stroke in 0..100 Y space
+function buildSketchSegment(
+  lineId: LineId,
+  rowIdx: number,
+  baseX: number,
+  amp = 2.4
+): { main: string; whisper: string; nodeXFirst: string; nodeXLater: string } {
+  const li = LINE_INDEX[lineId] + 1;
+  const x0 = railBoundaryX(lineId, rowIdx, baseX, amp);
+  const x4 = railBoundaryX(lineId, rowIdx + 1, baseX, amp);
+  const s0 = railBoundarySlope(lineId, rowIdx);
+  const s4 = railBoundarySlope(lineId, rowIdx + 1);
+
+  // Three interior hand-tremor waypoints so even tall rows look genuinely freehand
+  const y1 = 24 + jitter(li * 31 + rowIdx * 59) * 3.5;
+  const y2 = 50 + jitter(li * 41 + rowIdx * 71) * 4.5;
+  const y3 = 76 + jitter(li * 53 + rowIdx * 83) * 3.5;
+
+  const x1 = baseX + jitter(li * 61 + rowIdx * 97 + 2) * (amp * 1.15);
+  const x2 = baseX + jitter(li * 67 + rowIdx * 89 + 5) * (amp * 1.25);
+  const x3 = baseX + jitter(li * 73 + rowIdx * 101 + 8) * (amp * 1.15);
+
+  const s1 = jitter(li * 109 + rowIdx * 43 + 3) * 0.09;
+  const s2 = jitter(li * 131 + rowIdx * 37 + 9) * 0.095;
+  const s3 = jitter(li * 139 + rowIdx * 47 + 14) * 0.09;
+
+  const main = [
+    `M ${f(x0)} 0`,
+    `C ${f(x0 + s0 * 8)} ${f(y1 * 0.36)}, ${f(x1 - s1 * 8)} ${f(y1 * 0.68)}, ${f(x1)} ${f(y1)}`,
+    `C ${f(x1 + s1 * 8)} ${f(y1 + (y2 - y1) * 0.36)}, ${f(x2 - s2 * 8)} ${f(y1 + (y2 - y1) * 0.68)}, ${f(x2)} ${f(y2)}`,
+    `C ${f(x2 + s2 * 8)} ${f(y2 + (y3 - y2) * 0.36)}, ${f(x3 - s3 * 8)} ${f(y2 + (y3 - y2) * 0.68)}, ${f(x3)} ${f(y3)}`,
+    `C ${f(x3 + s3 * 8)} ${f(y3 + (100 - y3) * 0.36)}, ${f(x4 - s4 * 8)} ${f(y3 + (100 - y3) * 0.68)}, ${f(x4)} 100`,
+  ].join(" ");
+
+  // Subtle second nib pass weaving ~1px beside the primary stroke
+  const d0 = jitter(li * 149 + rowIdx * 23) * 1.05;
+  const d1 = jitter(li * 151 + rowIdx * 27 + 1) * 1.25;
+  const d2 = jitter(li * 157 + rowIdx * 29 + 3) * 1.3;
+  const d3 = jitter(li * 163 + rowIdx * 31 + 6) * 1.25;
+  const d4 = jitter(li * 149 + (rowIdx + 1) * 23) * 1.05;
+
+  const whisper = [
+    `M ${f(x0 + d0)} 0`,
+    `C ${f(x0 + d0 + s0 * 7)} ${f(y1 * 0.38)}, ${f(x1 + d1 - s1 * 7)} ${f(y1 * 0.66)}, ${f(x1 + d1)} ${f(y1)}`,
+    `C ${f(x1 + d1 + s1 * 7)} ${f(y1 + (y2 - y1) * 0.38)}, ${f(x2 + d2 - s2 * 7)} ${f(y1 + (y2 - y1) * 0.66)}, ${f(x2 + d2)} ${f(y2)}`,
+    `C ${f(x2 + d2 + s2 * 7)} ${f(y2 + (y3 - y2) * 0.38)}, ${f(x3 + d3 - s3 * 7)} ${f(y2 + (y3 - y2) * 0.66)}, ${f(x3 + d3)} ${f(y3)}`,
+    `C ${f(x3 + d3 + s3 * 7)} ${f(y3 + (100 - y3) * 0.38)}, ${f(x4 + d4 - s4 * 7)} ${f(y3 + (100 - y3) * 0.66)}, ${f(x4 + d4)} 100`,
+  ].join(" ");
+
+  // Approximate X near top of cell (entry 0, ~y=16) and middle of cell (entry 1+, ~y=58)
+  const nodeX0 = x0 * 0.35 + x1 * 0.65;
+  const nodeX1 = x2 * 0.65 + x3 * 0.35;
+
+  return {
+    main,
+    whisper,
+    nodeXFirst: f(nodeX0),
+    nodeXLater: f(nodeX1),
+  };
+}
+
+// Hand-drawn horizontal rule for section/row dividers
+function HandRule({
+  seed = 1,
+  className,
+  subtle = false,
+}: {
+  seed?: number;
+  className?: string;
+  subtle?: boolean;
+}) {
+  const y0 = 3 + jitter(seed * 13) * 0.9;
+  const y1 = 3 + jitter(seed * 29 + 4) * 1.2;
+  const y2 = 3 + jitter(seed * 47 + 9) * 1.1;
+  const y3 = 3 + jitter(seed * 61 + 2) * 0.9;
+  const d = `M 0 ${f(y0)} C 240 ${f(y1)}, 520 ${f(y2)}, 780 ${f(y1)} S 940 ${f(y3)}, 1000 ${f(y2)}`;
+  const d2 = `M 4 ${f(y0 + 0.7)} C 310 ${f(y2 + 0.5)}, 670 ${f(y1 - 0.5)}, 996 ${f(y3 + 0.4)}`;
+
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 1000 6"
+      preserveAspectRatio="none"
+      className={cn("pointer-events-none block h-[6px] w-full overflow-visible", className)}
+    >
+      <path
+        d={d}
+        fill="none"
+        stroke={subtle ? "#e7e5e4" : "#d6d3d1"}
+        strokeWidth={subtle ? "1" : "1.25"}
+        strokeLinecap="round"
+        vectorEffect="non-scaling-stroke"
+      />
+      {!subtle && (
+        <path
+          d={d2}
+          fill="none"
+          stroke="#a8a29e"
+          strokeOpacity="0.35"
+          strokeWidth="0.7"
+          strokeLinecap="round"
+          vectorEffect="non-scaling-stroke"
+        />
+      )}
+    </svg>
+  );
+}
+
+// Column background SVG drawing all hand-sketched rails in that column for one chapter
+function ColumnRailsSvg({
+  lineIds,
+  coords,
+  gutterWidth,
+  rowIdx,
+  activeLinesInChapter,
+  isRailHighlighted,
+  amp = 2.4,
+}: {
+  lineIds: LineId[];
+  coords: Record<string, number>;
+  gutterWidth: number;
+  rowIdx: number;
+  activeLinesInChapter: LineId[];
+  isRailHighlighted: (id: LineId, active: boolean) => boolean;
+  amp?: number;
+}) {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox={`0 0 ${gutterWidth} 100`}
+      preserveAspectRatio="none"
+      className="pointer-events-none absolute -bottom-[1px] top-0 left-0 z-10 overflow-visible"
+      style={{ width: `${gutterWidth}px`, height: "calc(100% + 1px)" }}
+    >
+      {lineIds.map((id) => {
+        const active = isRailHighlighted(id, activeLinesInChapter.includes(id));
+        const seg = buildSketchSegment(id, rowIdx, coords[id], amp);
+        const color = LINE_MAP[id].color;
+
+        if (!active) {
+          // Light pencil-sketch guideline when a track hasn't started yet or is filtered out
+          return (
+            <path
+              key={id}
+              d={seg.main}
+              fill="none"
+              stroke="#d6d3d1"
+              strokeWidth="1.05"
+              strokeDasharray="3 4.5"
+              strokeLinecap="round"
+              vectorEffect="non-scaling-stroke"
+            />
+          );
+        }
+
+        return (
+          <g key={id}>
+            <path
+              d={seg.main}
+              fill="none"
+              stroke={color}
+              strokeOpacity="0.9"
+              strokeWidth="1.95"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              vectorEffect="non-scaling-stroke"
+            />
+            <path
+              d={seg.whisper}
+              fill="none"
+              stroke={color}
+              strokeOpacity="0.32"
+              strokeWidth="0.85"
+              strokeLinecap="round"
+              vectorEffect="non-scaling-stroke"
+            />
+          </g>
+        );
+      })}
+    </svg>
+  );
+}
+
+// Hand-sketched header rail starter connecting seamlessly into row 0
+function HeaderRailsSvg({
+  lineIds,
+  coords,
+  gutterWidth,
+  amp = 2.4,
+}: {
+  lineIds: LineId[];
+  coords: Record<string, number>;
+  gutterWidth: number;
+  amp?: number;
+}) {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox={`0 0 ${gutterWidth} 44`}
+      preserveAspectRatio="none"
+      className="pointer-events-none absolute -bottom-[11px] top-1 left-0 overflow-visible"
+      style={{ width: `${gutterWidth}px`, height: "calc(100% + 7px)" }}
+    >
+      {lineIds.map((id) => {
+        const li = LINE_INDEX[id] + 1;
+        const xEnd = railBoundaryX(id, 0, coords[id], amp);
+        const xStart = coords[id] + jitter(li * 43 + 7) * 1.4;
+        const xCtrl = (xStart + xEnd) / 2 + jitter(li * 79 + 3) * 1.5;
+        const color = LINE_MAP[id].color;
+        return (
+          <g key={id}>
+            <path
+              d={`M ${f(xStart)} 4 Q ${f(xCtrl)} 24 ${f(xEnd)} 44`}
+              fill="none"
+              stroke={color}
+              strokeWidth="1.9"
+              strokeLinecap="round"
+              vectorEffect="non-scaling-stroke"
+            />
+            {/* Tiny ink nib dot at the very top of each stave line */}
+            <circle cx={f(xStart)} cy="4" r="2.1" fill={color} />
+          </g>
+        );
+      })}
+    </svg>
+  );
+}
+
+// Hand-drawn 2026 terminal arrow/loop cap starting seamlessly at final boundary
+function TerminalRailsSvg({
+  lineIds,
+  coords,
+  gutterWidth,
+  finalBoundaryIdx,
+  amp = 2.4,
+}: {
+  lineIds: LineId[];
+  coords: Record<string, number>;
+  gutterWidth: number;
+  finalBoundaryIdx: number;
+  amp?: number;
+}) {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox={`0 0 ${gutterWidth} 22`}
+      className="pointer-events-none absolute top-0 left-0 overflow-visible"
+      style={{ width: `${gutterWidth}px`, height: "22px" }}
+    >
+      {lineIds.map((id) => {
+        const li = LINE_INDEX[id] + 1;
+        const x0 = railBoundaryX(id, finalBoundaryIdx, coords[id], amp);
+        const xTip = x0 + jitter(li * 59 + 11) * 1.1;
+        const color = LINE_MAP[id].color;
+        return (
+          <g key={id}>
+            <path
+              d={`M ${f(x0)} 0 Q ${f(x0 + 0.6)} 8 ${f(xTip)} 15`}
+              fill="none"
+              stroke={color}
+              strokeWidth="1.8"
+              strokeLinecap="round"
+            />
+            {/* Hand-sketched small V arrowhead */}
+            <path
+              d={`M ${f(xTip - 3.3)} 10.8 L ${f(xTip)} 16.2 L ${f(xTip + 3.4)} 10.5`}
+              fill="none"
+              stroke={color}
+              strokeWidth="1.6"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </g>
+        );
+      })}
+    </svg>
+  );
+}
 
 type LightboxState = {
   photo: BioPhoto;
@@ -51,7 +374,8 @@ type LightboxState = {
 function EntryBlock({
   entry,
   year,
-  railOffsetPx,
+  seed,
+  railNodeOffsetPx,
   tickWidthPx,
   dimmed,
   eagerImage,
@@ -60,7 +384,8 @@ function EntryBlock({
 }: {
   entry: BioEntry;
   year: number;
-  railOffsetPx: number;
+  seed: number;
+  railNodeOffsetPx: number;
   tickWidthPx: number;
   dimmed: boolean;
   eagerImage?: boolean;
@@ -68,6 +393,10 @@ function EntryBlock({
   showCategoryBadge?: boolean;
 }) {
   const line = LINE_MAP[entry.lineId];
+  const rotDeg = Math.round(jitter(seed * 37 + 19) * 28);
+  const archY = 9 + jitter(seed * 23 + 5) * 2.1;
+  const tiltClass =
+    jitter(seed * 41 + 3) >= 0 ? "rotate-[0.45deg]" : "-rotate-[0.45deg]";
 
   return (
     <div
@@ -76,26 +405,46 @@ function EntryBlock({
         dimmed ? "opacity-20" : "opacity-100"
       )}
     >
-      {/* Horizontal tick from active rail to text */}
-      <span
+      {/* Hand-sketched ink loop node + curved pen tick connecting rail to entry */}
+      <svg
         aria-hidden="true"
-        className="pointer-events-none absolute top-[9px] z-10 h-[1px]"
+        className="pointer-events-none absolute top-0 z-20 overflow-visible"
         style={{
-          left: `${railOffsetPx}px`,
-          width: `${tickWidthPx}px`,
-          backgroundColor: line.color,
-          opacity: 0.45,
+          left: `${railNodeOffsetPx}px`,
+          width: `${Math.max(tickWidthPx, 6)}px`,
+          height: "18px",
         }}
-      />
-      {/* Node on the exact vertical line */}
-      <span
-        aria-hidden="true"
-        className="pointer-events-none absolute top-[9px] z-20 h-[7px] w-[7px] -translate-x-1/2 -translate-y-1/2 rounded-full ring-2 ring-white"
-        style={{
-          left: `${railOffsetPx}px`,
-          backgroundColor: line.color,
-        }}
-      />
+      >
+        {/* Curved fountain-pen connector tick */}
+        <path
+          d={`M 3.6 9.2 Q ${f(tickWidthPx * 0.52)} ${f(archY)} ${f(tickWidthPx)} 9.4`}
+          fill="none"
+          stroke={line.color}
+          strokeOpacity="0.62"
+          strokeWidth="1.3"
+          strokeLinecap="round"
+        />
+        {/* Tiny nib stop dot at entry end */}
+        <circle
+          cx={f(tickWidthPx)}
+          cy="9.4"
+          r="1.2"
+          fill={line.color}
+          fillOpacity="0.55"
+        />
+        {/* Hand-drawn overdrawn 1.2-turn ink loop node */}
+        <g transform={`translate(0, 9.2) rotate(${rotDeg})`}>
+          <circle cx="0" cy="0" r="3.6" fill="#ffffff" />
+          <path
+            d="M -3.5 -1.1 C -3.8 -4.1 0.8 -4.6 3.4 -2.3 C 4.7 -0.1 3.6 3.6 0.2 3.9 C -3.2 4.1 -4.4 0.9 -3.0 -2.1 C -2.1 -3.5 -0.2 -4.0 1.6 -3.4"
+            fill="none"
+            stroke={line.color}
+            strokeWidth="1.75"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </g>
+      </svg>
 
       <div className="leading-snug">
         <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
@@ -110,17 +459,17 @@ function EntryBlock({
               {line.shortLabel}
             </span>
           )}
-          <span className="text-[13.5px] font-medium text-neutral-900">
+          <span className="text-[13.5px] font-medium text-stone-900">
             {entry.title}
           </span>
           {entry.span && (
-            <span className="font-mono text-[11px] text-neutral-400">
+            <span className="font-mono text-[11px] text-stone-400">
               {entry.span}
             </span>
           )}
         </div>
 
-        <div className="mt-1 text-[12.5px] leading-relaxed text-neutral-600">
+        <div className="mt-1 text-[12.5px] leading-relaxed text-stone-600">
           {entry.detail}
           {entry.link && (
             <>
@@ -133,7 +482,7 @@ function EntryBlock({
                     ? "noreferrer noopener"
                     : undefined
                 }
-                className="inline-flex items-center font-mono text-[11px] text-neutral-500 underline decoration-neutral-300 underline-offset-2 hover:text-neutral-900 hover:decoration-neutral-700 visited:text-neutral-500"
+                className="inline-flex items-center font-mono text-[11px] text-stone-500 underline decoration-stone-300 underline-offset-2 hover:text-stone-900 hover:decoration-stone-700 visited:text-stone-500"
               >
                 {entry.link.label}↗
               </a>
@@ -152,30 +501,40 @@ function EntryBlock({
                 line,
               })
             }
-            className="group mt-2.5 block w-full max-w-[230px] text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 rounded-sm"
+            className="group mt-2.5 block w-full max-w-[228px] text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-900 rounded-sm"
           >
             <div
               className={cn(
-                "overflow-hidden rounded-[3px] border border-neutral-200 bg-neutral-50",
+                "overflow-hidden rounded-[2px] border border-stone-300/90 bg-[#fcfcfa] p-1.5 shadow-[1px_2px_0px_rgba(28,25,23,0.07)] transition-transform duration-300 group-hover:rotate-0",
+                tiltClass,
                 entry.photo.aspect === "portrait"
-                  ? "aspect-[4/4] max-w-[168px] bg-white p-1.5"
-                  : "aspect-[16/10]"
+                  ? "max-w-[168px]"
+                  : ""
               )}
             >
-              <img
-                src={entry.photo.src}
-                alt={entry.photo.alt}
-                loading={eagerImage ? "eager" : "lazy"}
-                decoding="async"
+              <div
                 className={cn(
-                  "h-full w-full transition-all duration-300 group-hover:scale-[1.02]",
+                  "overflow-hidden rounded-[1px] bg-stone-100",
                   entry.photo.aspect === "portrait"
-                    ? "object-contain"
-                    : "object-cover grayscale-[25%] contrast-[1.02] group-hover:grayscale-0"
+                    ? "aspect-[4/4] bg-white"
+                    : "aspect-[16/10]"
                 )}
-              />
+              >
+                <img
+                  src={entry.photo.src}
+                  alt={entry.photo.alt}
+                  loading={eagerImage ? "eager" : "lazy"}
+                  decoding="async"
+                  className={cn(
+                    "h-full w-full transition-all duration-300 group-hover:scale-[1.02]",
+                    entry.photo.aspect === "portrait"
+                      ? "object-contain"
+                      : "object-cover grayscale-[18%] contrast-[1.02] group-hover:grayscale-0"
+                  )}
+                />
+              </div>
             </div>
-            <span className="mt-1 block font-mono text-[10.5px] leading-tight text-neutral-400 group-hover:text-neutral-700">
+            <span className="mt-1.5 block font-mono text-[10.5px] leading-tight text-stone-400 group-hover:text-stone-700">
               {entry.photo.caption}
             </span>
           </button>
@@ -222,24 +581,23 @@ export default function BioTimeline() {
   return (
     <section aria-label="Life timeline 1988 to 2026" className="pb-12">
       {/* Intro header */}
-      <div className="mb-6 border-b border-neutral-200 pb-6">
+      <div className="mb-5 pb-5">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
-          <h1 className="text-2xl font-semibold tracking-tight text-neutral-950">
+          <h1 className="text-2xl font-semibold tracking-tight text-stone-950">
             Bio in Six Lines
           </h1>
-          <span className="font-mono text-xs tabular-nums text-neutral-400">
-            1988 — 2026 · 38 yrs
+          <span className="font-mono text-xs tabular-nums text-stone-400">
+            1988 — 2026 · Cagliari → London
           </span>
         </div>
-        <p className="mt-2 max-w-[680px] text-[13.5px] leading-relaxed text-neutral-600">
-          Six parallel vertical lines trace thirty-eight years from the Adriatic
-          coast to London —{" "}
-          <span className="font-medium text-neutral-900">1 line</span> for
+        <p className="mt-2 max-w-[680px] text-[13.5px] leading-relaxed text-stone-600">
+          Thirty-eight years sketched across six parallel lines —{" "}
+          <span className="font-medium text-stone-900">1 line</span> for
           activities &amp; achievements,{" "}
-          <span className="font-medium text-neutral-900">2 lines</span> for
-          overlapping places, and{" "}
-          <span className="font-medium text-neutral-900">3 lines</span> for the
-          people (and dog) along the way.
+          <span className="font-medium text-stone-900">2 lines</span> for
+          places, and{" "}
+          <span className="font-medium text-stone-900">3 lines</span> for the
+          people (and dog) met along the way.
         </p>
 
         {/* Interactive line legend / filter */}
@@ -250,8 +608,8 @@ export default function BioTimeline() {
             className={cn(
               "rounded-full border px-2.5 py-1 font-mono text-[11px] transition-colors",
               selectedLine === null
-                ? "border-neutral-900 bg-neutral-900 text-white"
-                : "border-neutral-200 bg-white text-neutral-600 hover:border-neutral-400"
+                ? "border-stone-900 bg-stone-900 text-white"
+                : "border-stone-200 bg-white text-stone-600 hover:border-stone-400"
             )}
           >
             All 6 lines
@@ -267,15 +625,24 @@ export default function BioTimeline() {
                 className={cn(
                   "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 font-mono text-[11px] transition-colors",
                   active
-                    ? "border-neutral-900 bg-neutral-950 text-white"
-                    : "border-neutral-200 bg-white text-neutral-700 hover:border-neutral-400"
+                    ? "border-stone-900 bg-stone-950 text-white"
+                    : "border-stone-200 bg-white text-stone-700 hover:border-stone-400"
                 )}
               >
-                <span
+                {/* Tiny hand-drawn squiggle swatch */}
+                <svg
                   aria-hidden="true"
-                  className="h-2 w-2 rounded-full"
-                  style={{ backgroundColor: line.color }}
-                />
+                  viewBox="0 0 14 8"
+                  className="h-2 w-3.5 overflow-visible"
+                >
+                  <path
+                    d="M 1 5.2 Q 4.5 1.8 7.5 4.6 T 13 3.4"
+                    fill="none"
+                    stroke={active ? "#ffffff" : line.color}
+                    strokeWidth="2.1"
+                    strokeLinecap="round"
+                  />
+                </svg>
                 <span>
                   {idx + 1}. {line.label}
                 </span>
@@ -291,297 +658,264 @@ export default function BioTimeline() {
             className={cn(
               "rounded-full border px-2.5 py-1 font-mono text-[11px] transition-colors",
               selectedLine === "photos"
-                ? "border-neutral-900 bg-neutral-900 text-white"
-                : "border-neutral-200 bg-neutral-50 text-neutral-600 hover:border-neutral-400"
+                ? "border-stone-900 bg-stone-900 text-white"
+                : "border-stone-200 bg-stone-50 text-stone-600 hover:border-stone-400"
             )}
           >
             Photos only
           </button>
         </div>
+
+        <HandRule seed={3} className="mt-5" />
       </div>
 
-      {/* DESKTOP STAVE (md and up): 3 synchronized columns with 1 + 2 + 3 vertical lines */}
+      {/* DESKTOP STAVE (md and up): 3 synchronized columns with 1 + 2 + 3 hand-drawn vertical lines */}
       <div className="hidden md:block">
-        {/* Sticky stave header aligned pixel-for-pixel with the 6 rails below */}
-        <div className="sticky top-0 z-30 grid grid-cols-[56px_minmax(0,1.22fr)_minmax(0,1fr)_minmax(0,1.08fr)] gap-x-6 border-b border-neutral-200 bg-white/95 pt-3 pb-2.5 backdrop-blur-sm">
-          <div className="font-mono text-[10px] uppercase tracking-wider text-neutral-400">
-            Year
-          </div>
-
-          {/* Column 1 Header (1 line) */}
-          <div
-            className="relative"
-            style={{ paddingLeft: `${DESKTOP_RAILS.activities.paddingLeft}px` }}
-          >
-            <span
-              aria-hidden="true"
-              className="absolute bottom-[-11px] top-1 w-[2px] -translate-x-1/2"
-              style={{
-                left: `${DESKTOP_RAILS.activities.coords["act-1"]}px`,
-                backgroundColor: LINE_MAP["act-1"].color,
-              }}
-            />
-            <div className="text-xs font-semibold tracking-tight text-neutral-900">
-              Activities &amp; Achievements
+        {/* Sticky stave header aligned seamlessly with row 0 */}
+        <div className="sticky top-0 z-30 bg-white/95 pt-3 pb-2.5 backdrop-blur-sm">
+          <div className="grid grid-cols-[54px_minmax(0,1.25fr)_minmax(0,0.98fr)_minmax(0,1.06fr)] gap-x-6">
+            <div className="font-mono text-[10px] uppercase tracking-wider text-stone-400">
+              Year
             </div>
-            <div className="font-mono text-[10px] text-neutral-400">
-              1 line · craft &amp; work
-            </div>
-          </div>
 
-          {/* Column 2 Header (2 lines) */}
-          <div
-            className="relative"
-            style={{ paddingLeft: `${DESKTOP_RAILS.places.paddingLeft}px` }}
-          >
-            {(["place-1", "place-2"] as LineId[]).map((id) => (
-              <span
-                key={id}
-                aria-hidden="true"
-                className="absolute bottom-[-11px] top-1 w-[2px] -translate-x-1/2"
-                style={{
-                  left: `${DESKTOP_RAILS.places.coords[id]}px`,
-                  backgroundColor: LINE_MAP[id].color,
-                }}
+            {/* Column 1 Header (1 line) */}
+            <div
+              className="relative"
+              style={{ paddingLeft: `${DESKTOP_RAILS.activities.paddingLeft}px` }}
+            >
+              <HeaderRailsSvg
+                lineIds={["act-1"]}
+                coords={DESKTOP_RAILS.activities.coords}
+                gutterWidth={DESKTOP_RAILS.activities.gutterWidth}
               />
-            ))}
-            <div className="text-xs font-semibold tracking-tight text-neutral-900">
-              Places
+              <div className="text-xs font-semibold tracking-tight text-stone-900">
+                Activities &amp; Achievements
+              </div>
+              <div className="font-mono text-[10px] text-stone-400">
+                1 line · craft &amp; obsessions
+              </div>
             </div>
-            <div className="font-mono text-[10px] text-neutral-400">
-              2 lines · base &amp; stints
-            </div>
-          </div>
 
-          {/* Column 3 Header (3 lines) */}
-          <div
-            className="relative"
-            style={{ paddingLeft: `${DESKTOP_RAILS.people.paddingLeft}px` }}
-          >
-            {(["people-1", "people-2", "people-3"] as LineId[]).map((id) => (
-              <span
-                key={id}
-                aria-hidden="true"
-                className="absolute bottom-[-11px] top-1 w-[2px] -translate-x-1/2"
-                style={{
-                  left: `${DESKTOP_RAILS.people.coords[id]}px`,
-                  backgroundColor: LINE_MAP[id].color,
-                }}
+            {/* Column 2 Header (2 lines) */}
+            <div
+              className="relative"
+              style={{ paddingLeft: `${DESKTOP_RAILS.places.paddingLeft}px` }}
+            >
+              <HeaderRailsSvg
+                lineIds={["place-1", "place-2"]}
+                coords={DESKTOP_RAILS.places.coords}
+                gutterWidth={DESKTOP_RAILS.places.gutterWidth}
               />
-            ))}
-            <div className="text-xs font-semibold tracking-tight text-neutral-900">
-              People
+              <div className="text-xs font-semibold tracking-tight text-stone-900">
+                Places
+              </div>
+              <div className="font-mono text-[10px] text-stone-400">
+                2 lines · home base &amp; stints
+              </div>
             </div>
-            <div className="font-mono text-[10px] text-neutral-400">
-              3 lines · roots, builders, friends
+
+            {/* Column 3 Header (3 lines) */}
+            <div
+              className="relative"
+              style={{ paddingLeft: `${DESKTOP_RAILS.people.paddingLeft}px` }}
+            >
+              <HeaderRailsSvg
+                lineIds={["people-1", "people-2", "people-3"]}
+                coords={DESKTOP_RAILS.people.coords}
+                gutterWidth={DESKTOP_RAILS.people.gutterWidth}
+              />
+              <div className="text-xs font-semibold tracking-tight text-stone-900">
+                People
+              </div>
+              <div className="font-mono text-[10px] text-stone-400">
+                3 lines · roots, builders, crew
+              </div>
             </div>
           </div>
+          <HandRule seed={11} className="mt-2.5" />
         </div>
 
         {/* Chronological rows */}
         <div>
           {chaptersToRender.map((chapter, chapterIdx) => (
-            <div
-              key={chapter.year}
-              className="group/row grid grid-cols-[56px_minmax(0,1.22fr)_minmax(0,1fr)_minmax(0,1.08fr)] gap-x-6 border-b border-neutral-100/90 last:border-b-0 hover:bg-neutral-50/50 transition-colors"
-            >
-              {/* Year column */}
-              <div className="py-5 pr-2">
-                <span className="sticky top-14 font-mono text-xs font-medium tabular-nums text-neutral-400 transition-colors group-hover/row:text-neutral-900">
-                  {chapter.year}
-                </span>
-              </div>
+            <div key={chapter.year} className="group/row relative">
+              <div className="grid grid-cols-[54px_minmax(0,1.25fr)_minmax(0,0.98fr)_minmax(0,1.06fr)] gap-x-6 hover:bg-stone-50/55 transition-colors">
+                {/* Year column */}
+                <div className="py-5 pr-2">
+                  <span className="sticky top-14 font-mono text-xs font-medium tabular-nums text-stone-400 transition-colors group-hover/row:text-stone-900">
+                    {chapter.year}
+                  </span>
+                </div>
 
-              {/* Column 1: Activities & Achievements (1 vertical line) */}
-              <div
-                className="relative py-5 space-y-4"
-                style={{
-                  paddingLeft: `${DESKTOP_RAILS.activities.paddingLeft}px`,
-                }}
-              >
-                {(() => {
-                  const id: LineId = "act-1";
-                  const active = isRailHighlighted(
-                    id,
-                    chapter.activeLines.includes(id)
-                  );
-                  return (
-                    <span
-                      aria-hidden="true"
-                      className="pointer-events-none absolute -bottom-[1px] top-0 z-10 -translate-x-1/2 transition-opacity duration-200"
-                      style={{
-                        left: `${DESKTOP_RAILS.activities.coords[id]}px`,
-                        width: active ? "2px" : "1px",
-                        backgroundColor: active
-                          ? LINE_MAP[id].color
-                          : "#e5e5e5",
-                      }}
-                    />
-                  );
-                })()}
+                {/* Column 1: Activities & Achievements (1 hand-drawn vertical line) */}
+                <div
+                  className="relative space-y-4 py-5"
+                  style={{
+                    paddingLeft: `${DESKTOP_RAILS.activities.paddingLeft}px`,
+                  }}
+                >
+                  <ColumnRailsSvg
+                    lineIds={["act-1"]}
+                    coords={DESKTOP_RAILS.activities.coords}
+                    gutterWidth={DESKTOP_RAILS.activities.gutterWidth}
+                    rowIdx={chapterIdx}
+                    activeLinesInChapter={chapter.activeLines}
+                    isRailHighlighted={isRailHighlighted}
+                  />
 
-                {chapter.activities.map((entry, idx) => {
-                  const railX = DESKTOP_RAILS.activities.coords[entry.lineId];
-                  const pad = DESKTOP_RAILS.activities.paddingLeft;
-                  return (
-                    <EntryBlock
-                      key={`${chapter.year}-act-${idx}`}
-                      entry={entry}
-                      year={chapter.year}
-                      railOffsetPx={railX - pad}
-                      tickWidthPx={pad - railX - 6}
-                      dimmed={isLineDimmed(entry.lineId, Boolean(entry.photo))}
-                      eagerImage={chapterIdx === 0}
-                      onOpenPhoto={setLightbox}
-                    />
-                  );
-                })}
-              </div>
-
-              {/* Column 2: Places (2 parallel vertical lines) */}
-              <div
-                className="relative py-5 space-y-4"
-                style={{ paddingLeft: `${DESKTOP_RAILS.places.paddingLeft}px` }}
-              >
-                {(["place-1", "place-2"] as LineId[]).map((id) => {
-                  const active = isRailHighlighted(
-                    id,
-                    chapter.activeLines.includes(id)
-                  );
-                  return (
-                    <span
-                      key={id}
-                      aria-hidden="true"
-                      className="pointer-events-none absolute -bottom-[1px] top-0 z-10 -translate-x-1/2 transition-opacity duration-200"
-                      style={{
-                        left: `${DESKTOP_RAILS.places.coords[id]}px`,
-                        width: active ? "2px" : "1px",
-                        backgroundColor: active
-                          ? LINE_MAP[id].color
-                          : "#ebebeb",
-                      }}
-                    />
-                  );
-                })}
-
-                {chapter.places.map((entry, idx) => {
-                  const railX = DESKTOP_RAILS.places.coords[entry.lineId];
-                  const pad = DESKTOP_RAILS.places.paddingLeft;
-                  return (
-                    <EntryBlock
-                      key={`${chapter.year}-place-${idx}`}
-                      entry={entry}
-                      year={chapter.year}
-                      railOffsetPx={railX - pad}
-                      tickWidthPx={pad - railX - 6}
-                      dimmed={isLineDimmed(entry.lineId, Boolean(entry.photo))}
-                      eagerImage={chapterIdx === 0}
-                      onOpenPhoto={setLightbox}
-                    />
-                  );
-                })}
-              </div>
-
-              {/* Column 3: People (3 parallel vertical lines) */}
-              <div
-                className="relative py-5 space-y-4"
-                style={{ paddingLeft: `${DESKTOP_RAILS.people.paddingLeft}px` }}
-              >
-                {(["people-1", "people-2", "people-3"] as LineId[]).map(
-                  (id) => {
-                    const active = isRailHighlighted(
-                      id,
-                      chapter.activeLines.includes(id)
+                  {chapter.activities.map((entry, idx) => {
+                    const pad = DESKTOP_RAILS.activities.paddingLeft;
+                    const seg = buildSketchSegment(
+                      entry.lineId,
+                      chapterIdx,
+                      DESKTOP_RAILS.activities.coords[entry.lineId]
+                    );
+                    const nodeX = Number(
+                      idx === 0 ? seg.nodeXFirst : seg.nodeXLater
                     );
                     return (
-                      <span
-                        key={id}
-                        aria-hidden="true"
-                        className="pointer-events-none absolute -bottom-[1px] top-0 z-10 -translate-x-1/2 transition-opacity duration-200"
-                        style={{
-                          left: `${DESKTOP_RAILS.people.coords[id]}px`,
-                          width: active ? "2px" : "1px",
-                          backgroundColor: active
-                            ? LINE_MAP[id].color
-                            : "#ebebeb",
-                        }}
+                      <EntryBlock
+                        key={`${chapter.year}-act-${idx}`}
+                        entry={entry}
+                        year={chapter.year}
+                        seed={chapter.year * 7 + idx + 1}
+                        railNodeOffsetPx={nodeX - pad}
+                        tickWidthPx={pad - nodeX - 6}
+                        dimmed={isLineDimmed(entry.lineId, Boolean(entry.photo))}
+                        eagerImage={chapterIdx < 2}
+                        onOpenPhoto={setLightbox}
                       />
                     );
-                  }
-                )}
+                  })}
+                </div>
 
-                {chapter.people.map((entry, idx) => {
-                  const railX = DESKTOP_RAILS.people.coords[entry.lineId];
-                  const pad = DESKTOP_RAILS.people.paddingLeft;
-                  return (
-                    <EntryBlock
-                      key={`${chapter.year}-people-${idx}`}
-                      entry={entry}
-                      year={chapter.year}
-                      railOffsetPx={railX - pad}
-                      tickWidthPx={pad - railX - 6}
-                      dimmed={isLineDimmed(entry.lineId, Boolean(entry.photo))}
-                      onOpenPhoto={setLightbox}
-                    />
-                  );
-                })}
+                {/* Column 2: Places (2 parallel hand-drawn vertical lines) */}
+                <div
+                  className="relative space-y-4 py-5"
+                  style={{ paddingLeft: `${DESKTOP_RAILS.places.paddingLeft}px` }}
+                >
+                  <ColumnRailsSvg
+                    lineIds={["place-1", "place-2"]}
+                    coords={DESKTOP_RAILS.places.coords}
+                    gutterWidth={DESKTOP_RAILS.places.gutterWidth}
+                    rowIdx={chapterIdx}
+                    activeLinesInChapter={chapter.activeLines}
+                    isRailHighlighted={isRailHighlighted}
+                  />
+
+                  {chapter.places.map((entry, idx) => {
+                    const pad = DESKTOP_RAILS.places.paddingLeft;
+                    const seg = buildSketchSegment(
+                      entry.lineId,
+                      chapterIdx,
+                      DESKTOP_RAILS.places.coords[entry.lineId]
+                    );
+                    const nodeX = Number(
+                      idx === 0 ? seg.nodeXFirst : seg.nodeXLater
+                    );
+                    return (
+                      <EntryBlock
+                        key={`${chapter.year}-place-${idx}`}
+                        entry={entry}
+                        year={chapter.year}
+                        seed={chapter.year * 11 + idx + 3}
+                        railNodeOffsetPx={nodeX - pad}
+                        tickWidthPx={pad - nodeX - 6}
+                        dimmed={isLineDimmed(entry.lineId, Boolean(entry.photo))}
+                        eagerImage={chapterIdx === 0}
+                        onOpenPhoto={setLightbox}
+                      />
+                    );
+                  })}
+                </div>
+
+                {/* Column 3: People (3 parallel hand-drawn vertical lines) */}
+                <div
+                  className="relative space-y-4 py-5"
+                  style={{ paddingLeft: `${DESKTOP_RAILS.people.paddingLeft}px` }}
+                >
+                  <ColumnRailsSvg
+                    lineIds={["people-1", "people-2", "people-3"]}
+                    coords={DESKTOP_RAILS.people.coords}
+                    gutterWidth={DESKTOP_RAILS.people.gutterWidth}
+                    rowIdx={chapterIdx}
+                    activeLinesInChapter={chapter.activeLines}
+                    isRailHighlighted={isRailHighlighted}
+                  />
+
+                  {chapter.people.map((entry, idx) => {
+                    const pad = DESKTOP_RAILS.people.paddingLeft;
+                    const seg = buildSketchSegment(
+                      entry.lineId,
+                      chapterIdx,
+                      DESKTOP_RAILS.people.coords[entry.lineId]
+                    );
+                    const nodeX = Number(
+                      idx === 0 ? seg.nodeXFirst : seg.nodeXLater
+                    );
+                    return (
+                      <EntryBlock
+                        key={`${chapter.year}-people-${idx}`}
+                        entry={entry}
+                        year={chapter.year}
+                        seed={chapter.year * 13 + idx + 5}
+                        railNodeOffsetPx={nodeX - pad}
+                        tickWidthPx={pad - nodeX - 6}
+                        dimmed={isLineDimmed(entry.lineId, Boolean(entry.photo))}
+                        onOpenPhoto={setLightbox}
+                      />
+                    );
+                  })}
+                </div>
               </div>
+
+              {chapterIdx < chaptersToRender.length - 1 && (
+                <HandRule seed={chapter.year} subtle />
+              )}
             </div>
           ))}
         </div>
 
-        {/* End-of-line 2026 terminal caps */}
-        <div className="grid grid-cols-[56px_minmax(0,1.22fr)_minmax(0,1fr)_minmax(0,1.08fr)] gap-x-6 pt-1">
-          <div className="font-mono text-[10px] text-neutral-300">→</div>
+        {/* End-of-line 2026 hand-sketched arrowheads */}
+        <div className="grid grid-cols-[54px_minmax(0,1.25fr)_minmax(0,0.98fr)_minmax(0,1.06fr)] gap-x-6">
+          <div className="pt-1 font-mono text-[10px] text-stone-300">2026+</div>
           <div
-            className="relative h-3"
+            className="relative h-6"
             style={{ paddingLeft: `${DESKTOP_RAILS.activities.paddingLeft}px` }}
           >
-            <span
-              aria-hidden="true"
-              className="absolute top-0 h-2 w-2 -translate-x-1/2 rounded-full border-2 bg-white"
-              style={{
-                left: `${DESKTOP_RAILS.activities.coords["act-1"]}px`,
-                borderColor: LINE_MAP["act-1"].color,
-              }}
+            <TerminalRailsSvg
+              lineIds={["act-1"]}
+              coords={DESKTOP_RAILS.activities.coords}
+              gutterWidth={DESKTOP_RAILS.activities.gutterWidth}
+              finalBoundaryIdx={chaptersToRender.length}
             />
           </div>
           <div
-            className="relative h-3"
+            className="relative h-6"
             style={{ paddingLeft: `${DESKTOP_RAILS.places.paddingLeft}px` }}
           >
-            {(["place-1", "place-2"] as LineId[]).map((id) => (
-              <span
-                key={id}
-                aria-hidden="true"
-                className="absolute top-0 h-2 w-2 -translate-x-1/2 rounded-full border-2 bg-white"
-                style={{
-                  left: `${DESKTOP_RAILS.places.coords[id]}px`,
-                  borderColor: LINE_MAP[id].color,
-                }}
-              />
-            ))}
+            <TerminalRailsSvg
+              lineIds={["place-1", "place-2"]}
+              coords={DESKTOP_RAILS.places.coords}
+              gutterWidth={DESKTOP_RAILS.places.gutterWidth}
+              finalBoundaryIdx={chaptersToRender.length}
+            />
           </div>
           <div
-            className="relative h-3"
+            className="relative h-6"
             style={{ paddingLeft: `${DESKTOP_RAILS.people.paddingLeft}px` }}
           >
-            {(["people-1", "people-2", "people-3"] as LineId[]).map((id) => (
-              <span
-                key={id}
-                aria-hidden="true"
-                className="absolute top-0 h-2 w-2 -translate-x-1/2 rounded-full border-2 bg-white"
-                style={{
-                  left: `${DESKTOP_RAILS.people.coords[id]}px`,
-                  borderColor: LINE_MAP[id].color,
-                }}
-              />
-            ))}
+            <TerminalRailsSvg
+              lineIds={["people-1", "people-2", "people-3"]}
+              coords={DESKTOP_RAILS.people.coords}
+              gutterWidth={DESKTOP_RAILS.people.gutterWidth}
+              finalBoundaryIdx={chaptersToRender.length}
+            />
           </div>
         </div>
       </div>
 
-      {/* MOBILE STAVE (< md): All 6 grouped vertical lines on the left margin */}
+      {/* MOBILE STAVE (< md): All 6 hand-drawn vertical lines in left margin */}
       <div className="md:hidden">
         {chaptersToRender.map((chapter, chapterIdx) => {
           const combined = [
@@ -595,42 +929,41 @@ export default function BioTimeline() {
               className="relative pb-7"
               style={{ paddingLeft: `${MOBILE_PADDING_LEFT}px` }}
             >
-              {/* All 6 continuous vertical lines in the left gutter */}
-              {BIO_LINES.map((line) => {
-                const active = isRailHighlighted(
-                  line.id,
-                  chapter.activeLines.includes(line.id)
-                );
-                return (
-                  <span
-                    key={line.id}
-                    aria-hidden="true"
-                    className="pointer-events-none absolute bottom-0 top-0 -translate-x-1/2"
-                    style={{
-                      left: `${MOBILE_RAIL_X[line.id]}px`,
-                      width: active ? "2px" : "1px",
-                      backgroundColor: active ? line.color : "#ebebeb",
-                    }}
-                  />
-                );
-              })}
+              <ColumnRailsSvg
+                lineIds={BIO_LINES.map((l) => l.id)}
+                coords={MOBILE_RAIL_X}
+                gutterWidth={MOBILE_GUTTER_WIDTH}
+                rowIdx={chapterIdx}
+                activeLinesInChapter={chapter.activeLines}
+                isRailHighlighted={isRailHighlighted}
+                amp={1.45}
+              />
 
-              <div className="mb-2.5 font-mono text-xs font-semibold tabular-nums text-neutral-900">
+              <div className="mb-2.5 font-mono text-xs font-semibold tabular-nums text-stone-900">
                 {chapter.year}
               </div>
 
               <div className="space-y-4">
                 {combined.map((entry, idx) => {
-                  const railX = MOBILE_RAIL_X[entry.lineId];
+                  const seg = buildSketchSegment(
+                    entry.lineId,
+                    chapterIdx,
+                    MOBILE_RAIL_X[entry.lineId],
+                    1.45
+                  );
+                  const nodeX = Number(
+                    idx === 0 ? seg.nodeXFirst : seg.nodeXLater
+                  );
                   return (
                     <EntryBlock
                       key={`mob-${chapter.year}-${idx}`}
                       entry={entry}
                       year={chapter.year}
-                      railOffsetPx={railX - MOBILE_PADDING_LEFT}
-                      tickWidthPx={MOBILE_PADDING_LEFT - railX - 8}
+                      seed={chapter.year * 17 + idx + 9}
+                      railNodeOffsetPx={nodeX - MOBILE_PADDING_LEFT}
+                      tickWidthPx={MOBILE_PADDING_LEFT - nodeX - 8}
                       dimmed={isLineDimmed(entry.lineId, Boolean(entry.photo))}
-                      eagerImage={chapterIdx === 0}
+                      eagerImage={chapterIdx < 2}
                       onOpenPhoto={setLightbox}
                       showCategoryBadge
                     />
@@ -640,21 +973,18 @@ export default function BioTimeline() {
             </div>
           );
         })}
+
         <div
-          className="relative h-3"
+          className="relative h-6"
           style={{ paddingLeft: `${MOBILE_PADDING_LEFT}px` }}
         >
-          {BIO_LINES.map((line) => (
-            <span
-              key={`mob-cap-${line.id}`}
-              aria-hidden="true"
-              className="absolute top-0 h-2 w-2 -translate-x-1/2 rounded-full border-2 bg-white"
-              style={{
-                left: `${MOBILE_RAIL_X[line.id]}px`,
-                borderColor: line.color,
-              }}
-            />
-          ))}
+          <TerminalRailsSvg
+            lineIds={BIO_LINES.map((l) => l.id)}
+            coords={MOBILE_RAIL_X}
+            gutterWidth={MOBILE_GUTTER_WIDTH}
+            finalBoundaryIdx={chaptersToRender.length}
+            amp={1.45}
+          />
         </div>
       </div>
 
@@ -672,8 +1002,8 @@ export default function BioTimeline() {
             onClick={() => setLightbox(null)}
             className="absolute inset-0 h-full w-full cursor-zoom-out"
           />
-          <div className="relative z-10 w-full max-w-[640px] rounded bg-white p-3 shadow-2xl">
-            <div className="overflow-hidden rounded-[2px] bg-neutral-100">
+          <div className="relative z-10 w-full max-w-[640px] rounded bg-[#fcfcfa] p-3 shadow-2xl">
+            <div className="overflow-hidden rounded-[2px] bg-stone-100">
               <img
                 src={lightbox.photo.src}
                 alt={lightbox.photo.alt}
@@ -687,18 +1017,18 @@ export default function BioTimeline() {
                     className="inline-block h-2 w-2 rounded-full"
                     style={{ backgroundColor: lightbox.line.color }}
                   />
-                  <span className="font-mono text-xs font-medium text-neutral-900">
+                  <span className="font-mono text-xs font-medium text-stone-900">
                     {lightbox.year} · {lightbox.title}
                   </span>
                 </div>
-                <div className="mt-0.5 font-mono text-[11px] text-neutral-500">
+                <div className="mt-0.5 font-mono text-[11px] text-stone-500">
                   {lightbox.photo.caption}
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => setLightbox(null)}
-                className="shrink-0 rounded border border-neutral-200 px-2 py-0.5 font-mono text-[11px] text-neutral-600 hover:border-neutral-400 hover:text-neutral-900"
+                className="shrink-0 rounded border border-stone-200 px-2 py-0.5 font-mono text-[11px] text-stone-600 hover:border-stone-400 hover:text-stone-900"
               >
                 ESC
               </button>

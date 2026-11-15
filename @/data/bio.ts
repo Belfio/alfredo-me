@@ -1,6 +1,8 @@
 import SkipperImg from "@/assets/skipper.png";
-import AdriaticImg from "@/assets/bio/adriatic.jpg";
-import SailingImg from "@/assets/bio/sailing.jpg";
+import CagliariImg from "@/assets/bio/cagliari.jpg";
+import OlivettiImg from "@/assets/bio/olivetti.jpg";
+import Mac93Img from "@/assets/bio/mac93.jpg";
+import ModemImg from "@/assets/bio/modem.jpg";
 import GuitarImg from "@/assets/bio/guitar.jpg";
 import MilanImg from "@/assets/bio/milan.jpg";
 import LabImg from "@/assets/bio/lab.jpg";
@@ -35,10 +37,10 @@ export const BIO_LINES: BioLineMeta[] = [
     id: "act-1",
     group: "activities",
     indexInGroup: 0,
-    label: "Craft & Milestones",
+    label: "Activities & Craft",
     shortLabel: "Craft",
-    color: "#18181b",
-    softBg: "rgba(24, 24, 27, 0.06)",
+    color: "#1c1917",
+    softBg: "rgba(28, 25, 23, 0.06)",
   },
   {
     id: "place-1",
@@ -46,17 +48,17 @@ export const BIO_LINES: BioLineMeta[] = [
     indexInGroup: 0,
     label: "Home Base",
     shortLabel: "Base",
-    color: "#c2410c",
-    softBg: "rgba(194, 65, 12, 0.08)",
+    color: "#b45309",
+    softBg: "rgba(180, 83, 9, 0.08)",
   },
   {
     id: "place-2",
     group: "places",
     indexInGroup: 1,
-    label: "Detours & Stints",
-    shortLabel: "Detours",
-    color: "#d97706",
-    softBg: "rgba(217, 119, 6, 0.08)",
+    label: "Courts & Stints",
+    shortLabel: "Stints",
+    color: "#c2410c",
+    softBg: "rgba(194, 65, 12, 0.08)",
   },
   {
     id: "people-1",
@@ -80,10 +82,10 @@ export const BIO_LINES: BioLineMeta[] = [
     id: "people-3",
     group: "people",
     indexInGroup: 2,
-    label: "Friends & Pack",
-    shortLabel: "Friends",
-    color: "#4f46e5",
-    softBg: "rgba(79, 70, 229, 0.08)",
+    label: "Friends & Crew",
+    shortLabel: "Crew",
+    color: "#4338ca",
+    softBg: "rgba(67, 56, 202, 0.08)",
   },
 ];
 
@@ -119,126 +121,192 @@ export const BIO_CHAPTERS: BioChapter[] = [
     activities: [
       {
         lineId: "act-1",
-        title: "Arrived two weeks early",
+        title: "Born in Cagliari",
         detail:
-          "Born during a late-summer Adriatic heatwave; reportedly slept straight through an August thunderstorm on night one.",
+          "Day one on the southern coast of Sardinia — bright Mediterranean light, warm maestrale wind off the gulf, and salt air in every room.",
       },
     ],
     places: [
       {
         lineId: "place-1",
-        title: "Ancona & the Marche Coast",
+        title: "Cagliari · Sardinia",
         span: "1988–2006",
         detail:
-          "White limestone cliffs under Monte Conero, salt air on winter mornings, and pebble beaches ten minutes from home.",
+          "Sun-bleached limestone bastions, pink flamingos in the lagoons, and the long curve of Poetto beach under Sella del Diavolo.",
         photo: {
-          src: AdriaticImg,
-          alt: "Monte Conero cliffs meeting the Adriatic Sea at sunset",
-          caption: "Monte Conero & the Adriatic coast — home base #1",
+          src: CagliariImg,
+          alt: "Aerial view of Poetto beach and bay in Cagliari, Sardinia",
+          caption: "Golfo degli Angeli & Poetto, Cagliari — line #1 starts here",
         },
       },
     ],
     people: [
       {
         lineId: "people-1",
-        title: "Parents & Nonno Cesare",
+        title: "Parents & Sardinian Family",
         span: "1988–",
         detail:
-          "Nonno Cesare, a retired marine draftsman, kept brass calipers, naval charts, and fountain pens in every desk drawer.",
+          "Big Sunday lunches that stretched past four o'clock, shelves full of tools and manuals, and patience for a kid who took everything apart.",
       },
     ],
   },
   {
-    year: 1994,
+    year: 1992,
+    activeLines: ["act-1", "place-1", "people-1"],
+    activities: [
+      {
+        lineId: "act-1",
+        title: "Olivetti computer games at home",
+        detail:
+          "Age four, kneeling on a dining chair in front of the family Olivetti CRT, memorising floppy-disk boot commands just to launch DOS games.",
+        photo: {
+          src: OlivettiImg,
+          alt: "Vintage Olivetti M24 personal computer with CRT monitor and keyboard",
+          caption: "Beige Olivetti iron — first glowing phosphor screen at home",
+        },
+      },
+    ],
+    places: [],
+    people: [],
+  },
+  {
+    year: 1993,
     activeLines: ["act-1", "place-1", "place-2", "people-1", "people-3"],
     activities: [
       {
         lineId: "act-1",
-        title: "Reverse-engineered the family Moka & espresso machine",
+        title: "Macintosh at five & starting basketball",
         detail:
-          "Successfully reassembled 90% of the kitchen espresso maker; carried three leftover brass washers in a pocket tin as good-luck charms.",
+          "Moved to a compact Apple Macintosh with its startup chime and one-button mouse, and laced up sneakers for minibasket the same year.",
+        photo: {
+          src: Mac93Img,
+          alt: "Compact Apple Macintosh Classic computer with keyboard and mouse",
+          caption: "1993 Macintosh on the desk — System 7 icons & happy Mac",
+        },
       },
     ],
     places: [
       {
         lineId: "place-2",
-        title: "Sibillini Mountains",
-        span: "summers '94–'99",
+        title: "Cagliari Basketball Courts",
+        span: "1993–2005",
         detail:
-          "August weeks in a stone farmhouse at 1,100m with cold spring water, zero TV reception, and Perseid meteor counts.",
+          "Echoing neighbourhood parquet and sun-baked outdoor hoops three afternoons a week.",
       },
     ],
     people: [
       {
         lineId: "people-3",
-        title: "Matteo & the Cul-de-sac Time Trials",
-        span: "1994–2006",
+        title: "Davide, Giacomo & Pasquale",
+        span: "1993–",
         detail:
-          "Neighborhood bicycle sprints clocked to tenths of a second on a translucent Casio F-91W.",
+          "Met on the basketball court at five years old — teammates from minibasket drills to endless summer afternoons and decades beyond.",
       },
     ],
   },
   {
-    year: 1998,
-    activeLines: ["act-1", "place-1", "place-2", "people-1", "people-2", "people-3"],
+    year: 1997,
+    activeLines: ["act-1", "place-1", "place-2", "people-1", "people-3"],
     activities: [
       {
         lineId: "act-1",
-        title: "Linux off magazine CDs & youth regattas",
+        title: "Carmageddon & 54k dial-up internet",
         detail:
-          "Partitioned the family Pentium II to boot Slackware, then won a windy coastal dinghy race mostly by tacking ten seconds earlier than everyone else.",
+          "Afternoon mayhem in Carmageddon followed by the unmistakable screech-and-hiss of a 54k modem handshake tying up the house phone line.",
+        link: { label: "play /carmageddon", href: "/carmageddon" },
         photo: {
-          src: SailingImg,
-          alt: "Small sailboats tacking across choppy coastal water",
-          caption: "Coastal regatta season on the Adriatic, late '90s",
+          src: ModemImg,
+          alt: "Analog 56k dial-up modem with red status LEDs",
+          caption: "Blinking carrier LEDs — 'don't pick up the phone!'",
         },
+      },
+    ],
+    places: [],
+    people: [],
+  },
+  {
+    year: 1999,
+    activeLines: [
+      "act-1",
+      "place-1",
+      "place-2",
+      "people-1",
+      "people-2",
+      "people-3",
+    ],
+    activities: [
+      {
+        lineId: "act-1",
+        title: "My first computer — self-taught C, Napster & WinMX",
+        detail:
+          "A dedicated tower in my bedroom at eleven: teaching myself pointers, loops, and C compilers from scratch while babysitting 4 KB/s MP3 queues on Napster and WinMX.",
       },
     ],
     places: [],
     people: [
       {
         lineId: "people-2",
-        title: "Signor Bellini's Radio Bench",
-        span: "1998–2003",
+        title: "Late-Night IRC & C Tutorials",
+        span: "1999–2004",
         detail:
-          "Local hi-fi repairman who paid for Saturday sweeping in spare capacitors and taught how to trace a dead circuit by ear.",
+          "Plain-text guides, Italian coding forums, and strangers debugging segfaults over dial-up past midnight.",
       },
     ],
   },
   {
-    year: 2003,
-    activeLines: ["act-1", "place-1", "place-2", "people-1", "people-3"],
+    year: 2001,
+    activeLines: [
+      "act-1",
+      "place-1",
+      "place-2",
+      "people-1",
+      "people-2",
+      "people-3",
+    ],
     activities: [
       {
         lineId: "act-1",
-        title: "Basement guitar amps & first Pelikan M200",
+        title: "Deus Ex, music & punk",
         detail:
-          "Played rhythm guitar in Teorema Zero (four loud gigs, one blown parish-hall fuse) and started keeping engineering notebooks in black fountain-pen ink.",
-        photo: {
-          src: GuitarImg,
-          alt: "Vintage silverface Fender Twin Reverb guitar amplifier",
-          caption: "Borrowed silverface combo — louder than any room we played",
-        },
+          "Crawling through UNATCO air ducts and memorising four-digit keypads in Deus Ex while falling headfirst into music and blasting raw three-chord punk off burned Verbatim CD-Rs.",
       },
     ],
-    places: [
-      {
-        lineId: "place-2",
-        title: "Dublin",
-        span: "summer 2003",
-        detail:
-          "Four rainy July weeks meant for English grammar; mostly spent crate-digging second-hand vinyl off Dame Street.",
-      },
-    ],
+    places: [],
     people: [
       {
         lineId: "people-3",
-        title: "Lorenzo & Giulia",
-        span: "2003–2011",
+        title: "Sharpie CD-R Swaps",
+        span: "2001–2005",
         detail:
-          "Bandmates who spent forty minutes debating setlist transitions for a twenty-five-minute set.",
+          "Trading scratched punk mixes and game ISOs in backpack pockets with Davide, Giacomo, and Pasquale.",
       },
     ],
+  },
+  {
+    year: 2002,
+    activeLines: [
+      "act-1",
+      "place-1",
+      "place-2",
+      "people-1",
+      "people-2",
+      "people-3",
+    ],
+    activities: [
+      {
+        lineId: "act-1",
+        title: "Metal music & loud amplifiers",
+        detail:
+          "Graduated from three chords to palm-muted metal riffs, double-kick records, and garage rehearsal amps turned up just past polite.",
+        photo: {
+          src: GuitarImg,
+          alt: "Vintage silverface guitar combo amplifier",
+          caption: "High-gain riffs & ringing ears after rehearsal",
+        },
+      },
+    ],
+    places: [],
+    people: [],
   },
   {
     year: 2007,
@@ -248,7 +316,7 @@ export const BIO_CHAPTERS: BioChapter[] = [
         lineId: "act-1",
         title: "Biomedical Engineering at Politecnico di Milano",
         detail:
-          "Fell headfirst into biosignal processing, muscle electrophysiology, and linear algebra fueled by 80-cent campus espressos.",
+          "Packed bags across the Tyrrhenian Sea for biosignal processing, muscle electrophysiology, and linear algebra fueled by 80-cent campus espressos.",
         link: { label: "polimi.it", href: "https://www.polimi.it/" },
       },
     ],
@@ -269,29 +337,36 @@ export const BIO_CHAPTERS: BioChapter[] = [
     people: [
       {
         lineId: "people-2",
-        title: "Prof. Ferretti's Biosignals Group",
+        title: "Prof. Ferretti's Biosignals Bench",
         span: "2008–2012",
         detail:
           "First lab bench where noisy EMG traces started looking like a decodable alphabet.",
       },
       {
         lineId: "people-3",
-        title: "Davide (Via Pacini #4)",
-        span: "2007–",
+        title: "Marco & the Città Studi Flat",
+        span: "2007–2012",
         detail:
-          "Flatmate who insisted on cooking carbonara at 1:15 a.m. the night before every control-theory exam.",
+          "Flatmates who insisted on cooking pasta at 1:15 a.m. the night before every control-theory exam.",
       },
     ],
   },
   {
     year: 2011,
-    activeLines: ["act-1", "place-1", "place-2", "people-1", "people-2", "people-3"],
+    activeLines: [
+      "act-1",
+      "place-1",
+      "place-2",
+      "people-1",
+      "people-2",
+      "people-3",
+    ],
     activities: [
       {
         lineId: "act-1",
         title: "Neural signal decoding at Case Western Reserve",
         detail:
-          "Visiting research stint writing real-time signal classifiers and surviving Lake Erie blizzards at −18°C.",
+          "Visiting research stint writing real-time biosignal classifiers and surviving Lake Erie blizzards at −18°C.",
         link: { label: "case.edu", href: "https://case.edu/" },
         photo: {
           src: LabImg,
@@ -312,7 +387,7 @@ export const BIO_CHAPTERS: BioChapter[] = [
     people: [
       {
         lineId: "people-2",
-        title: "Dr. Lindqvist & the Neural Lab Cohort",
+        title: "Dr. Lindqvist & Neural Lab Cohort",
         span: "2011–2014",
         detail:
           "Three researchers from three time zones sharing one oscilloscope and a two-liter thermos of filter coffee.",
@@ -351,13 +426,20 @@ export const BIO_CHAPTERS: BioChapter[] = [
         title: "Samir & Claire",
         span: "2013–",
         detail:
-          "Met over lukewarm cider after a Friday seminar; undefeated Sunday-roast and pub-quiz regulars ever since.",
+          "Met over lukewarm cider after a Friday seminar; undefeated Sunday-roast and gig regulars ever since.",
       },
     ],
   },
   {
     year: 2015,
-    activeLines: ["act-1", "place-1", "place-2", "people-1", "people-2", "people-3"],
+    activeLines: [
+      "act-1",
+      "place-1",
+      "place-2",
+      "people-1",
+      "people-2",
+      "people-3",
+    ],
     activities: [
       {
         lineId: "act-1",
@@ -401,7 +483,14 @@ export const BIO_CHAPTERS: BioChapter[] = [
   },
   {
     year: 2018,
-    activeLines: ["act-1", "place-1", "place-2", "people-1", "people-2", "people-3"],
+    activeLines: [
+      "act-1",
+      "place-1",
+      "place-2",
+      "people-1",
+      "people-2",
+      "people-3",
+    ],
     activities: [
       {
         lineId: "act-1",
@@ -437,7 +526,14 @@ export const BIO_CHAPTERS: BioChapter[] = [
   },
   {
     year: 2020,
-    activeLines: ["act-1", "place-1", "place-2", "people-1", "people-2", "people-3"],
+    activeLines: [
+      "act-1",
+      "place-1",
+      "place-2",
+      "people-1",
+      "people-2",
+      "people-3",
+    ],
     activities: [
       {
         lineId: "act-1",
@@ -449,19 +545,19 @@ export const BIO_CHAPTERS: BioChapter[] = [
     places: [
       {
         lineId: "place-2",
-        title: "Umbria Hilltop",
+        title: "Sardinia Remote Autumn",
         span: "autumn 2020",
         detail:
-          "Two quiet months shipping code from a stone table between olive groves and woodsmoke.",
+          "Two quiet months shipping code near the sea in October light after lockdown lifted.",
       },
     ],
     people: [
       {
         lineId: "people-1",
-        title: "Sunday Zooms with Marche",
+        title: "Sunday Video Lunches with Cagliari",
         span: "2020–2021",
         detail:
-          "Synchronised family pasta lunches across time zones, complete with remote critique of sauce viscosity.",
+          "Synchronised family pasta lunches across time zones, complete with remote critique of malloreddus ridges.",
       },
     ],
   },
@@ -495,7 +591,14 @@ export const BIO_CHAPTERS: BioChapter[] = [
   },
   {
     year: 2024,
-    activeLines: ["act-1", "place-1", "place-2", "people-1", "people-2", "people-3"],
+    activeLines: [
+      "act-1",
+      "place-1",
+      "place-2",
+      "people-1",
+      "people-2",
+      "people-3",
+    ],
     activities: [
       {
         lineId: "act-1",
@@ -506,7 +609,8 @@ export const BIO_CHAPTERS: BioChapter[] = [
         photo: {
           src: GigImg,
           alt: "Sold-out marquee at Brixton Academy music venue in London",
-          caption: "Sold-out London nights — turning streaming signals into loud rooms",
+          caption:
+            "Sold-out London nights — from Napster MP3s and metal gigs to packing real venues",
         },
       },
     ],
@@ -525,13 +629,20 @@ export const BIO_CHAPTERS: BioChapter[] = [
         title: "Gotobeat Team, Bookers & Touring Bands",
         span: "2024–",
         detail:
-          "Engineers, promoters, and soundcheck pros turning spreadsheets and models into 500 people singing the chorus back.",
+          "Engineers, promoters, and soundcheck pros turning models into 500 people shouting the chorus back.",
       },
     ],
   },
   {
     year: 2026,
-    activeLines: ["act-1", "place-1", "place-2", "people-1", "people-2", "people-3"],
+    activeLines: [
+      "act-1",
+      "place-1",
+      "place-2",
+      "people-1",
+      "people-2",
+      "people-3",
+    ],
     activities: [
       {
         lineId: "act-1",
@@ -550,10 +661,10 @@ export const BIO_CHAPTERS: BioChapter[] = [
       },
       {
         lineId: "place-2",
-        title: "Milan & the Adriatic",
+        title: "Cagliari & Milan",
         span: "frequent",
         detail:
-          "Still flying south whenever an excuse appears for espresso at the counter and a cold swim under Conero.",
+          "Flying south whenever an excuse appears for espresso at the counter and a swim off Poetto.",
       },
     ],
     people: [
@@ -562,7 +673,7 @@ export const BIO_CHAPTERS: BioChapter[] = [
         title: "Six lines still running",
         span: "1988 → 2026",
         detail:
-          "Family on the coast, builders in the trenches, old friends on speed dial, and a Border Collie waiting by the door.",
+          "Family in Sardinia, Davide, Giacomo & Pasquale since '93, builders in the trenches, and a Border Collie waiting by the door.",
       },
     ],
   },
