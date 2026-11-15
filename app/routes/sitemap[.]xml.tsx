@@ -7,7 +7,6 @@ export async function loader() {
 
   const staticPages = [
     { url: BASE_URL, lastmod: new Date().toISOString().split("T")[0], priority: "1.0" },
-    { url: `${BASE_URL}/bio`, lastmod: new Date().toISOString().split("T")[0], priority: "0.9" },
   ];
 
   const blogPages = blogs.map((blog) => ({

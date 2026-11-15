@@ -15,6 +15,7 @@ export const meta: MetaFunction = () => {
   return [
     { title },
     { name: "description", content: description },
+    { name: "robots", content: "noindex, nofollow" },
     { property: "og:title", content: title },
     { property: "og:description", content: description },
     { property: "og:type", content: "profile" },
