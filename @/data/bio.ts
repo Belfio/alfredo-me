@@ -66,7 +66,10 @@ export const BIO_STOPS: BioStop[] = [
     items: [
       {
         lineId: "people",
-        segments: ["Got married"],
+        segments: [
+          "Got married — ",
+          { text: "alfandtrin.com", href: "https://alfandtrin.com" },
+        ],
       },
     ],
   },
@@ -79,6 +82,7 @@ export const BIO_STOPS: BioStop[] = [
         segments: [
           "Joined ",
           { text: "Gotobeat", href: "https://gotobeat.com" },
+          " as CTO to create the operating system of live music",
         ],
       },
     ],
@@ -113,7 +117,7 @@ export const BIO_STOPS: BioStop[] = [
     items: [
       {
         lineId: "people",
-        segments: ["New girlfriend & future wife"],
+        segments: ["Trinity (future wife)"],
       },
     ],
   },
@@ -237,7 +241,7 @@ export const BIO_STOPS: BioStop[] = [
         lineId: "activities",
         segments: [
           { text: "Politecnico di Milano", href: "https://www.polimi.it/" },
-          " — Electronics",
+          " — M.Sc in Biomedical Engineering and Electronics",
         ],
       },
       {
@@ -413,7 +417,7 @@ export const BIO_STOPS: BioStop[] = [
             text: "Mac",
             href: "https://en.wikipedia.org/wiki/Macintosh_Classic",
           },
-          " computer at 5 & basketball",
+          " computer & basketball",
         ],
       },
       {
