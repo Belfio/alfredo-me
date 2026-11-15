@@ -138,8 +138,8 @@ export const BIO_STOPS: BioStop[] = [
       {
         lineId: "activities",
         segments: [
-          { text: "Zinc", href: "https://www.zinc.vc/" },
-          " — founded ",
+          { text: "Zinc VC", href: "https://www.zinc.vc/" },
+          " (startup incubator) — founded ",
           { text: "Betterspace", href: "https://www.betterspace.uk/" },
           ", a platform to help and support people's mental health",
         ],
@@ -170,8 +170,14 @@ export const BIO_STOPS: BioStop[] = [
         lineId: "activities",
         segments: [
           { text: "HAX", href: "https://hax.co/" },
-          " & ",
+          " accelerator & ",
           { text: "SOSV", href: "https://sosv.com/" },
+          " VC — $150k investment in ",
+          {
+            text: "Flicktek",
+            href: "https://patents.google.com/patent/US11281301B2/en",
+          },
+          ", the first gesture control wristband for any device",
         ],
       },
       {
