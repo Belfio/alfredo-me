@@ -13,9 +13,17 @@ export default function Header({ className }: { className?: string }) {
           <li>
             <a
               href="/#home"
-                            className="text-gray-900 visited:text-gray-900 hover:text-blue-800"
+              className="text-gray-900 visited:text-gray-900 hover:text-blue-800"
             >
               Home
+            </a>
+          </li>
+          <li>
+            <a
+              href="/bio"
+              className="text-gray-900 visited:text-gray-900 hover:text-blue-800"
+            >
+              Bio
             </a>
           </li>
           <li>

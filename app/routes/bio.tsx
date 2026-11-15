@@ -1,5 +1,6 @@
 import { type MetaFunction } from "@remix-run/node";
 import { isRouteErrorResponse, useRouteError } from "@remix-run/react";
+import Header from "@/components/Header";
 import BioTimeline from "@/components/BioTimeline";
 import Contact from "@/components/Contact";
 
@@ -14,7 +15,6 @@ export const meta: MetaFunction = () => {
   return [
     { title },
     { name: "description", content: description },
-    { name: "robots", content: "noindex, nofollow" },
     { property: "og:title", content: title },
     { property: "og:description", content: description },
     { property: "og:type", content: "profile" },
@@ -28,10 +28,13 @@ export const meta: MetaFunction = () => {
 
 export default function BioPage() {
   return (
-    <main className="m-auto w-[95%] sm:max-w-[780px] py-10 px-4">
-      <BioTimeline />
-      <Contact />
-    </main>
+    <div>
+      <Header className="mt-8" />
+      <main className="m-auto w-[95%] sm:max-w-[780px] py-8 px-4">
+        <BioTimeline />
+        <Contact />
+      </main>
+    </div>
   );
 }
 
@@ -40,19 +43,25 @@ export function ErrorBoundary() {
 
   if (isRouteErrorResponse(error)) {
     return (
-      <div className="m-auto w-[95%] sm:max-w-[780px] py-10 px-4">
-        <h1>
-          {error.status} {error.statusText}
-        </h1>
-        <p>{error.data}</p>
+      <div>
+        <Header className="mt-8" />
+        <div className="m-auto w-[95%] sm:max-w-[780px] py-8 px-4">
+          <h1>
+            {error.status} {error.statusText}
+          </h1>
+          <p>{error.data}</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="m-auto w-[95%] sm:max-w-[780px] py-10 px-4">
-      <h1>Error</h1>
-      <p>{error instanceof Error ? error.message : "Unknown error"}</p>
+    <div>
+      <Header className="mt-8" />
+      <div className="m-auto w-[95%] sm:max-w-[780px] py-8 px-4">
+        <h1>Error</h1>
+        <p>{error instanceof Error ? error.message : "Unknown error"}</p>
+      </div>
     </div>
   );
 }
