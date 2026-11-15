@@ -117,7 +117,7 @@ export const BIO_STOPS: BioStop[] = [
     items: [
       {
         lineId: "people",
-        segments: ["Trinity (future wife)"],
+        segments: ["Met my future wife, Trinity"],
       },
     ],
   },
@@ -127,7 +127,7 @@ export const BIO_STOPS: BioStop[] = [
     items: [
       {
         lineId: "people",
-        segments: ["Broke up with Carla"],
+        segments: ["Broke up..."],
       },
     ],
   },
