@@ -48,6 +48,7 @@ export type BioPhoto = {
 
 export type BioStopItem = {
   lineId: LineId;
+  alsoLineIds?: LineId[];
   segments: TextSegment[];
 };
 
@@ -269,6 +270,20 @@ export const BIO_STOPS: BioStop[] = [
     },
   },
   {
+    id: "2010-graduation",
+    year: "2010",
+    items: [
+      {
+        lineId: "activities",
+        segments: [
+          "Graduated from ",
+          { text: "University of Cagliari", href: "https://www.unica.it/" },
+          " — top 5% on my course",
+        ],
+      },
+    ],
+  },
+  {
     id: "2010-usa",
     year: "2010",
     items: [
@@ -303,7 +318,7 @@ export const BIO_STOPS: BioStop[] = [
     items: [
       {
         lineId: "activities",
-        segments: ["Erasmus — top 5% on my course"],
+        segments: ["Erasmus"],
       },
       {
         lineId: "places",
@@ -348,18 +363,10 @@ export const BIO_STOPS: BioStop[] = [
     year: "2002",
     items: [
       {
-        lineId: "activities",
-        segments: ["Metal music"],
-      },
-      {
         lineId: "people",
         segments: ["First girlfriend, Francesca"],
       },
     ],
-    photo: {
-      src: GuitarImg,
-      alt: "Vintage silverface guitar combo amplifier",
-    },
   },
   {
     id: "2001",
@@ -372,14 +379,18 @@ export const BIO_STOPS: BioStop[] = [
             text: "Deus Ex",
             href: "https://en.wikipedia.org/wiki/Deus_Ex_(video_game)",
           },
-          ", music & punk",
         ],
       },
       {
-        lineId: "people",
-        segments: ["Friends — Daniele & Giovanni"],
+        lineId: "activities",
+        alsoLineIds: ["people"],
+        segments: ["Music, punk & metal — friends Daniele & Giovanni"],
       },
     ],
+    photo: {
+      src: GuitarImg,
+      alt: "Vintage silverface guitar combo amplifier",
+    },
   },
   {
     id: "1999",
@@ -424,12 +435,13 @@ export const BIO_STOPS: BioStop[] = [
             text: "Mac",
             href: "https://en.wikipedia.org/wiki/Macintosh_Classic",
           },
-          " computer & basketball",
+          " computer",
         ],
       },
       {
-        lineId: "people",
-        segments: ["Met Davide, Giacomo & Pasquale"],
+        lineId: "activities",
+        alsoLineIds: ["people"],
+        segments: ["Basketball — met Davide, Giacomo & Pasquale"],
       },
     ],
     photo: {

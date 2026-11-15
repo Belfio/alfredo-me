@@ -347,26 +347,37 @@ function segmentsToPlainText(segments: TextSegment[]): string {
   return segments.map((s) => (typeof s === "string" ? s : s.text)).join("");
 }
 
+type NodeAnchor = {
+  lineId: LineId;
+  xPx: number;
+};
+
 function StopItemRow({
   item,
   seed,
-  nodeXPx,
+  nodes,
   contentPaddingLeftPx,
 }: {
   item: BioStopItem;
   seed: number;
-  nodeXPx: number;
+  nodes: NodeAnchor[];
   contentPaddingLeftPx: number;
 }) {
-  const line = LINE_MAP[item.lineId];
-  const rotDeg = Math.round(jitter(seed * 37 + 19) * 28);
+  const firstNode = nodes[0];
+  const lastNode = nodes[nodes.length - 1];
+  const lastLine = LINE_MAP[lastNode.lineId];
   const archY = 10 + jitter(seed * 23 + 5) * 2.2;
-  const railNodeOffsetPx = nodeXPx - contentPaddingLeftPx;
-  const tickWidthPx = contentPaddingLeftPx - nodeXPx - 8;
+  const railNodeOffsetPx = firstNode.xPx - contentPaddingLeftPx;
+  const tickWidthPx = contentPaddingLeftPx - firstNode.xPx - 8;
 
-  const tickPath = `M 4.2 10.2 C ${f(tickWidthPx * 0.34)} ${f(archY)}, ${f(
-    tickWidthPx * 0.72
-  )} ${f(20.4 - archY)}, ${f(tickWidthPx)} 10.4`;
+  const localLastX = lastNode.xPx - firstNode.xPx;
+  const tailStartX = localLastX + 4.2;
+  const tailSpan = Math.max(tickWidthPx - tailStartX, 4);
+  const tailPath = `M ${f(tailStartX)} 10.2 C ${f(
+    tailStartX + tailSpan * 0.34
+  )} ${f(archY)}, ${f(tailStartX + tailSpan * 0.72)} ${f(
+    20.4 - archY
+  )}, ${f(tickWidthPx)} 10.4`;
 
   return (
     <div className="relative">
@@ -379,9 +390,55 @@ function StopItemRow({
           height: "20px",
         }}
       >
+        {/* Bridge strokes between multiple connected rails (e.g. activities + people) */}
+        {nodes.slice(0, -1).map((node, idx) => {
+          const nextNode = nodes[idx + 1];
+          const segColor = LINE_MAP[node.lineId].color;
+          const startX = node.xPx - firstNode.xPx + 4.2;
+          const endX = nextNode.xPx - firstNode.xPx - 4.2;
+          const span = Math.max(endX - startX, 2);
+          const bridgeArchY = 10 + jitter((seed + idx * 11) * 29 + 3) * 2.1;
+          const bridgePath = `M ${f(startX)} 10.2 C ${f(
+            startX + span * 0.34
+          )} ${f(bridgeArchY)}, ${f(startX + span * 0.72)} ${f(
+            20.4 - bridgeArchY
+          )}, ${f(endX)} 10.2`;
+
+          return (
+            <Fragment key={`bridge-${node.lineId}-${nextNode.lineId}`}>
+              <path
+                d={bridgePath}
+                fill="none"
+                stroke="#ffffff"
+                strokeOpacity="0.9"
+                strokeWidth="3.8"
+                strokeLinecap="round"
+              />
+              <path
+                d={bridgePath}
+                fill="none"
+                stroke={segColor}
+                strokeOpacity="0.76"
+                strokeWidth="1.45"
+                strokeLinecap="round"
+              />
+              <path
+                d={`M ${f(startX + 0.4)} 10.9 Q ${f(
+                  startX + span * 0.55
+                )} ${f(bridgeArchY + 1.1)} ${f(endX - 0.4)} 9.8`}
+                fill="none"
+                stroke={segColor}
+                strokeOpacity="0.32"
+                strokeWidth="0.8"
+                strokeLinecap="round"
+              />
+            </Fragment>
+          );
+        })}
+
         {/* Crisp white sketch halo so ticks crossing adjacent rails hop cleanly */}
         <path
-          d={tickPath}
+          d={tailPath}
           fill="none"
           stroke="#ffffff"
           strokeOpacity="0.9"
@@ -390,19 +447,19 @@ function StopItemRow({
         />
         {/* Double-pass freehand fountain-pen connector tick */}
         <path
-          d={tickPath}
+          d={tailPath}
           fill="none"
-          stroke={line.color}
+          stroke={lastLine.color}
           strokeOpacity="0.76"
           strokeWidth="1.45"
           strokeLinecap="round"
         />
         <path
-          d={`M 4.6 10.9 Q ${f(tickWidthPx * 0.55)} ${f(archY + 1.1)} ${f(
-            tickWidthPx - 0.6
-          )} 9.8`}
+          d={`M ${f(tailStartX + 0.4)} 10.9 Q ${f(
+            tailStartX + tailSpan * 0.55
+          )} ${f(archY + 1.1)} ${f(tickWidthPx - 0.6)} 9.8`}
           fill="none"
-          stroke={line.color}
+          stroke={lastLine.color}
           strokeOpacity="0.32"
           strokeWidth="0.8"
           strokeLinecap="round"
@@ -411,21 +468,32 @@ function StopItemRow({
           cx={f(tickWidthPx)}
           cy="10.4"
           r="1.35"
-          fill={line.color}
+          fill={lastLine.color}
           fillOpacity="0.68"
         />
-        {/* Hand-drawn overdrawn 1.4-turn sketchy ink loop node */}
-        <g transform={`translate(0, 10.2) rotate(${rotDeg})`}>
-          <circle cx="0" cy="0" r="4.2" fill="#ffffff" />
-          <path
-            d="M -3.9 -1.2 C -4.3 -4.6 1.1 -5.1 3.9 -2.5 C 5.2 -0.1 4.0 4.1 0.3 4.3 C -3.6 4.6 -4.9 1.0 -3.3 -2.4 C -2.2 -4.0 0.2 -4.5 2.4 -3.6"
-            fill="none"
-            stroke={line.color}
-            strokeWidth="1.85"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </g>
+
+        {/* Hand-drawn overdrawn 1.4-turn sketchy ink loop node on each connected rail */}
+        {nodes.map((node, idx) => {
+          const localX = node.xPx - firstNode.xPx;
+          const nodeColor = LINE_MAP[node.lineId].color;
+          const rotDeg = Math.round(jitter((seed + idx * 17) * 37 + 19) * 28);
+          return (
+            <g
+              key={`node-${node.lineId}`}
+              transform={`translate(${f(localX)}, 10.2) rotate(${rotDeg})`}
+            >
+              <circle cx="0" cy="0" r="4.2" fill="#ffffff" />
+              <path
+                d="M -3.9 -1.2 C -4.3 -4.6 1.1 -5.1 3.9 -2.5 C 5.2 -0.1 4.0 4.1 0.3 4.3 C -3.6 4.6 -4.9 1.0 -3.3 -2.4 C -2.2 -4.0 0.2 -4.5 2.4 -3.6"
+                fill="none"
+                stroke={nodeColor}
+                strokeWidth="1.85"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </g>
+          );
+        })}
       </svg>
 
       <div className="text-[14.5px] leading-[1.42] text-stone-900">
@@ -500,11 +568,6 @@ export default function BioTimeline() {
                   {/* Stop text at the center */}
                   <div className="min-w-0 flex-1 space-y-2.5">
                     {stop.items.map((item, itemIdx) => {
-                      const seg = buildSketchSegment(
-                        item.lineId,
-                        rowIdx,
-                        RAIL_X[item.lineId]
-                      );
                       // Match item vertical center in 0..100 row Y-space
                       const approxY =
                         itemCount === 1
@@ -513,15 +576,28 @@ export default function BioTimeline() {
                             ? itemIdx === 0
                               ? 36
                               : 64
-                            : 25 + itemIdx * 25;
-                      const nodeX = seg.xAtY(approxY);
+                            : Math.round(((itemIdx + 1) / (itemCount + 1)) * 100);
+
+                      const lineIds = [
+                        item.lineId,
+                        ...(item.alsoLineIds ?? []),
+                      ].sort((a, b) => LINE_INDEX[a] - LINE_INDEX[b]);
+
+                      const nodes: NodeAnchor[] = lineIds.map((lid) => ({
+                        lineId: lid,
+                        xPx: buildSketchSegment(
+                          lid,
+                          rowIdx,
+                          RAIL_X[lid]
+                        ).xAtY(approxY),
+                      }));
 
                       return (
                         <StopItemRow
                           key={`${stop.id}-${itemIdx}`}
                           item={item}
                           seed={rowIdx * 37 + itemIdx * 13 + 5}
-                          nodeXPx={nodeX}
+                          nodes={nodes}
                           contentPaddingLeftPx={CONTENT_PADDING_LEFT}
                         />
                       );
