@@ -14,7 +14,7 @@ What is the consequence? There is a possibility that the American military, usin
 
 Even just the potential to take them over would be enough to cause catastrophic consequences in the relationships between countries.
 
-China would not need to know that its nuclear infrastructure had been compromised. The credible possibility that it could be compromised might be enough to destabilize the balance of power.
+China would not need to know that its nuclear infrastructure had been compromised. The credible possibility that it could be compromised might be enough to destabilize the balance of power. If their systems still have a connection to the "common" internet, it means they have not taken this possibility seriously.
 
 At this point, the question is what the response would be.
 
