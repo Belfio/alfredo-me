@@ -2,7 +2,7 @@
 
 ## Why the internet as we know it will not survive autonomous AI
 
-The paperclip example is a possible but low-probability chain of events that ends in a catastrophe.
+P(1): The paperclip example is a possible but low-probability chain of events that ends in a catastrophe.
 
 There is, instead, a much more plausible event that causes a disruptive scenario, and I don’t see how it won’t happen.
 
@@ -28,12 +28,10 @@ China, at this point, might be safer, but communications need to continue.
 
 Phone communication will continue.
 
-A new protocol for the internet will be invented, or new isolated networks will emerge to guarantee secure communications between critical systems.
+A new protocol for the internet will be invented.
 
 The internet as we know it will not survive.
 
-Not necessarily because AI destroys it, but because countries can no longer trust the infrastructure connecting them.
-
-And the possibility of compromise, rather than the compromise itself, may be enough to trigger this transformation.
+The possibility of compromise, rather than the compromise itself, may be enough to trigger this transformation.
 
 2026-11-17
