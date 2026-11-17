@@ -261,7 +261,7 @@ export const BIO_STOPS: BioStop[] = [
       },
       {
         lineId: "people",
-        segments: ["Second girlfriend, Carla"],
+        segments: ["Second girlfriend"],
       },
     ],
     photo: {
@@ -331,7 +331,7 @@ export const BIO_STOPS: BioStop[] = [
       },
       {
         lineId: "people",
-        segments: ["Broke up with Francesca"],
+        segments: ["Broke up"],
       },
     ],
     photo: {
@@ -364,7 +364,7 @@ export const BIO_STOPS: BioStop[] = [
     items: [
       {
         lineId: "people",
-        segments: ["First girlfriend, Francesca"],
+        segments: ["First girlfriend"],
       },
     ],
   },
@@ -384,7 +384,7 @@ export const BIO_STOPS: BioStop[] = [
       {
         lineId: "activities",
         alsoLineIds: ["people"],
-        segments: ["Music, punk & metal — friends Daniele & Giovanni"],
+        segments: ["Music, punk & metal — met some more friends for life"],
       },
     ],
     photo: {
@@ -441,7 +441,7 @@ export const BIO_STOPS: BioStop[] = [
       {
         lineId: "activities",
         alsoLineIds: ["people"],
-        segments: ["Basketball — met Davide, Giacomo & Pasquale"],
+        segments: ["Basketball — met some friends for life"],
       },
     ],
     photo: {
