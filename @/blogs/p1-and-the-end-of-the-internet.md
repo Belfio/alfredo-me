@@ -2,7 +2,7 @@
 
 ## Why the internet as we know it will not survive autonomous AI
 
-The paperclip example is a possibly implausible chain of events that ends in a catastrophe.
+The paperclip example is a possible but low-probability chain of events that ends in a catastrophe.
 
 There is, instead, a much more plausible event that causes a disruptive scenario, and I don’t see how it won’t happen.
 
